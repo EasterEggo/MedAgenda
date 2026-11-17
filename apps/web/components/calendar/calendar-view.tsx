@@ -116,7 +116,7 @@ export function CalendarView() {
         </li>
         <li className="flex items-center gap-2">
           <span aria-hidden="true" className="evt-swatch evt-cancelled" />
-          {t("appointments.status.CANCELLED")}
+          {t("calendar.appointments.status.CANCELLED")}
           <span className="text-muted">{t("calendar.legend.cancelled")}</span>
         </li>
       </ul>
@@ -170,7 +170,9 @@ function toEvent(
     provider: a.provider.name,
   });
   const cancelled = a.status === "CANCELLED";
-  const title = cancelled ? `${translate(`appointments.status.${a.status}`)}: ${label}` : label;
+  const title = cancelled
+    ? `${translate(`calendar.appointments.status.${a.status}`)}: ${label}`
+    : label;
   const tz = a.clinic.timezone;
   return {
     id: a.id,

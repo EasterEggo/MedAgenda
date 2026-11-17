@@ -12,7 +12,6 @@
     "actions": {
       "back": "Back",
       "next": "Next",
-      "submit": "Submit",
       "cancel": "Cancel",
       "save": "Save",
       "close": "Close",
@@ -21,7 +20,6 @@
     },
     "nav": {
       "main": "Main navigation",
-      "home": "Home",
       "login": "Sign in",
       "register": "Create account",
       "dashboard": "Dashboard",
@@ -145,6 +143,20 @@
       "invalid": "Invalid value.",
       "passwordMismatch": "Passwords do not match.",
       "codeFormat": "Enter the 6 digits of the code."
+    },
+    "emails": {
+      "verify": {
+        "subject": "Confirm your email – MedAgenda",
+        "body": "Confirm your email using this link (valid for 24 hours):\n\n{link}\n"
+      },
+      "reset": {
+        "subject": "Password reset – MedAgenda",
+        "body": "To reset your password, use this link (valid for 1 hour):\n\n{link}\n\nIf this was not you, ignore this message.\n"
+      },
+      "alreadyRegistered": {
+        "subject": "You already have an account – MedAgenda",
+        "body": "Someone tried to create an account with this email, but it is already registered.\nIf it was you, sign in or reset your password: {link}\n"
+      }
     }
   },
   "errors": {
@@ -244,6 +256,15 @@
       "text": "Save it to your calendar with one of the options below.",
       "viewCalendar": "Open my calendar",
       "bookAnother": "Book another"
+    },
+    "emails": {
+      "confirmation": {
+        "subject": "Your appointment is confirmed – MedAgenda",
+        "service": "{type} – {name} ({provider})",
+        "serviceNoName": "{type} ({provider})",
+        "body": "Hello,\n\nYour appointment is confirmed:\n\n{service}\n{when}\n{clinic}, {address}\n{preparation}\nSee your appointments at: {link}\n\nChanges and cancellations are possible up to 2 hours before the start.\n",
+        "preparation": "Preparation: {text}"
+      }
     }
   },
   "calendar": {
@@ -290,6 +311,40 @@
       "addEvent": "Add this event to Google Calendar",
       "newTab": "(opens in a new tab)",
       "heading": "Add to your calendar"
+    },
+    "appointments": {
+      "title": "My appointments",
+      "filterLabel": "Show",
+      "filters": {
+        "upcoming": "Upcoming",
+        "past": "Past",
+        "cancelled": "Cancelled"
+      },
+      "empty": {
+        "upcoming": "No upcoming appointments.",
+        "past": "No past appointments.",
+        "cancelled": "No cancelled appointments."
+      },
+      "status": {
+        "SCHEDULED": "Scheduled",
+        "CANCELLED": "Cancelled",
+        "COMPLETED": "Completed",
+        "NO_SHOW": "No-show"
+      },
+      "open": "View details",
+      "detail": {
+        "service": "Service",
+        "professional": "Professional",
+        "clinic": "Clinic",
+        "address": "Address",
+        "phone": "Phone",
+        "when": "Date and time",
+        "duration": "Duration",
+        "preparation": "How to prepare",
+        "noPreparation": "No special preparation is needed.",
+        "notes": "Your notes",
+        "noNotes": "No notes."
+      }
     }
   },
   "settings": {
@@ -455,39 +510,17 @@
       "goDashboard": "Back to dashboard"
     }
   },
-  "ics": {},
-  "appointments": {
-    "title": "My appointments",
-    "filterLabel": "Show",
-    "filters": {
-      "upcoming": "Upcoming",
-      "past": "Past",
-      "cancelled": "Cancelled"
+  "ics": {
+    "kind": {
+      "CONSULTATION": "Appointment",
+      "EXAM": "Exam"
     },
-    "empty": {
-      "upcoming": "No upcoming appointments.",
-      "past": "No past appointments.",
-      "cancelled": "No cancelled appointments."
-    },
-    "status": {
-      "SCHEDULED": "Scheduled",
-      "CANCELLED": "Cancelled",
-      "COMPLETED": "Completed",
-      "NO_SHOW": "No-show"
-    },
-    "open": "View details",
-    "detail": {
-      "service": "Service",
-      "professional": "Professional",
-      "clinic": "Clinic",
-      "address": "Address",
-      "phone": "Phone",
-      "when": "Date and time",
-      "duration": "Duration",
-      "preparation": "How to prepare",
-      "noPreparation": "No special preparation is needed.",
-      "notes": "Your notes",
-      "noNotes": "No notes."
-    }
+    "summary": "{kind} – {name} ({provider})",
+    "summaryNoName": "{kind} ({provider})",
+    "location": "{clinic}, {address}",
+    "descriptionPreparation": "Preparation: {text}",
+    "descriptionPhone": "Clinic phone: {phone}",
+    "reminder": "Appointment reminder",
+    "calendarName": "MedAgenda – Appointments and exams"
   }
 }

@@ -25,7 +25,7 @@ export function StatusBadge({ status }: { status: AppointmentStatus }) {
       )}
     >
       <Icon aria-hidden="true" className="size-3.5" />
-      {t(`appointments.status.${status}`)}
+      {t(`calendar.appointments.status.${status}`)}
     </span>
   );
 }

@@ -40,12 +40,12 @@ export function StepSuccess({
       </div>
 
       <dl className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-3 rounded-lg border border-slate-300 bg-card p-5 text-sm">
-        <dt className="font-semibold">{t("appointments.detail.service")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.service")}</dt>
         <dd className="flex flex-wrap items-center gap-2">
           <ServiceTypeBadge serviceType={appointment.serviceType} />
           <span className="font-medium">{appointmentName(appointment, locale)}</span>
         </dd>
-        <dt className="font-semibold">{t("appointments.detail.when")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.when")}</dt>
         <dd>
           <time dateTime={appointment.startsAt}>
             {formatDateTime(appointment.startsAt, {
@@ -54,9 +54,9 @@ export function StepSuccess({
             })}
           </time>
         </dd>
-        <dt className="font-semibold">{t("appointments.detail.professional")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.professional")}</dt>
         <dd>{appointment.provider.name}</dd>
-        <dt className="font-semibold">{t("appointments.detail.clinic")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.clinic")}</dt>
         <dd>
           {appointment.clinic.name}, {appointment.clinic.address}
         </dd>

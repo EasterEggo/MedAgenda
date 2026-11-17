@@ -9,7 +9,12 @@ import { calendarApi } from "@/lib/api/endpoints";
 import { errorMessageKey, toApiError } from "@/lib/api/client";
 import { Section } from "./section";
 
-const STEPS = ["step1", "step2", "step3", "step4"] as const;
+const STEP_KEYS = [
+  "settings.feed.step1",
+  "settings.feed.step2",
+  "settings.feed.step3",
+  "settings.feed.step4",
+] as const;
 
 /** Calendar feed: the URL is only returned when created or rotated, so it is shown right then. */
 export function FeedSection() {
@@ -106,8 +111,8 @@ export function FeedSection() {
       <div>
         <h3 className="font-semibold">{t("settings.feed.howTitle")}</h3>
         <ol className="list-decimal pl-6 text-sm">
-          {STEPS.map((s) => (
-            <li key={s}>{t(`settings.feed.${s}`)}</li>
+          {STEP_KEYS.map((key) => (
+            <li key={key}>{t(key)}</li>
           ))}
         </ol>
       </div>

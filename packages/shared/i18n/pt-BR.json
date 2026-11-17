@@ -12,7 +12,6 @@
     "actions": {
       "back": "Voltar",
       "next": "Continuar",
-      "submit": "Enviar",
       "cancel": "Cancelar",
       "save": "Salvar",
       "close": "Fechar",
@@ -21,7 +20,6 @@
     },
     "nav": {
       "main": "Navegação principal",
-      "home": "Início",
       "login": "Entrar",
       "register": "Criar conta",
       "dashboard": "Painel",
@@ -145,6 +143,20 @@
       "invalid": "Valor inválido.",
       "passwordMismatch": "As senhas não coincidem.",
       "codeFormat": "Digite os 6 dígitos do código."
+    },
+    "emails": {
+      "verify": {
+        "subject": "Confirme seu e-mail – MedAgenda",
+        "body": "Confirme seu e-mail acessando o link (válido por 24 horas):\n\n{link}\n"
+      },
+      "reset": {
+        "subject": "Redefinição de senha – MedAgenda",
+        "body": "Para redefinir sua senha, acesse o link (válido por 1 hora):\n\n{link}\n\nSe não foi você, ignore esta mensagem.\n"
+      },
+      "alreadyRegistered": {
+        "subject": "Você já tem uma conta – MedAgenda",
+        "body": "Alguém tentou criar uma conta com este e-mail, mas ele já está cadastrado.\nSe foi você, entre ou redefina sua senha: {link}\n"
+      }
     }
   },
   "errors": {
@@ -244,6 +256,15 @@
       "text": "Salve no seu calendário com uma das opções abaixo.",
       "viewCalendar": "Abrir meu calendário",
       "bookAnother": "Marcar outro"
+    },
+    "emails": {
+      "confirmation": {
+        "subject": "Seu agendamento está confirmado – MedAgenda",
+        "service": "{type} – {name} ({provider})",
+        "serviceNoName": "{type} ({provider})",
+        "body": "Olá,\n\nSeu agendamento foi confirmado:\n\n{service}\n{when}\n{clinic}, {address}\n{preparation}\nVeja seus atendimentos em: {link}\n\nCancelamentos e remarcações são possíveis até 2 horas antes do horário.\n",
+        "preparation": "Preparo: {text}"
+      }
     }
   },
   "calendar": {
@@ -290,6 +311,40 @@
       "addEvent": "Adicionar este evento ao Google Agenda",
       "newTab": "(abre em nova aba)",
       "heading": "Adicionar ao seu calendário"
+    },
+    "appointments": {
+      "title": "Meus atendimentos",
+      "filterLabel": "Mostrar",
+      "filters": {
+        "upcoming": "Próximos",
+        "past": "Anteriores",
+        "cancelled": "Cancelados"
+      },
+      "empty": {
+        "upcoming": "Nenhum atendimento futuro.",
+        "past": "Nenhum atendimento anterior.",
+        "cancelled": "Nenhum atendimento cancelado."
+      },
+      "status": {
+        "SCHEDULED": "Agendado",
+        "CANCELLED": "Cancelado",
+        "COMPLETED": "Concluído",
+        "NO_SHOW": "Faltou"
+      },
+      "open": "Ver detalhes",
+      "detail": {
+        "service": "Serviço",
+        "professional": "Profissional",
+        "clinic": "Clínica",
+        "address": "Endereço",
+        "phone": "Telefone",
+        "when": "Data e horário",
+        "duration": "Duração",
+        "preparation": "Como se preparar",
+        "noPreparation": "Não é necessário preparo especial.",
+        "notes": "Suas observações",
+        "noNotes": "Sem observações."
+      }
     }
   },
   "settings": {
@@ -455,39 +510,17 @@
       "goDashboard": "Voltar ao painel"
     }
   },
-  "ics": {},
-  "appointments": {
-    "title": "Meus atendimentos",
-    "filterLabel": "Mostrar",
-    "filters": {
-      "upcoming": "Próximos",
-      "past": "Anteriores",
-      "cancelled": "Cancelados"
+  "ics": {
+    "kind": {
+      "CONSULTATION": "Consulta",
+      "EXAM": "Exame"
     },
-    "empty": {
-      "upcoming": "Nenhum atendimento futuro.",
-      "past": "Nenhum atendimento anterior.",
-      "cancelled": "Nenhum atendimento cancelado."
-    },
-    "status": {
-      "SCHEDULED": "Agendado",
-      "CANCELLED": "Cancelado",
-      "COMPLETED": "Concluído",
-      "NO_SHOW": "Faltou"
-    },
-    "open": "Ver detalhes",
-    "detail": {
-      "service": "Serviço",
-      "professional": "Profissional",
-      "clinic": "Clínica",
-      "address": "Endereço",
-      "phone": "Telefone",
-      "when": "Data e horário",
-      "duration": "Duração",
-      "preparation": "Como se preparar",
-      "noPreparation": "Não é necessário preparo especial.",
-      "notes": "Suas observações",
-      "noNotes": "Sem observações."
-    }
+    "summary": "{kind} – {name} ({provider})",
+    "summaryNoName": "{kind} ({provider})",
+    "location": "{clinic}, {address}",
+    "descriptionPreparation": "Preparo: {text}",
+    "descriptionPhone": "Telefone da clínica: {phone}",
+    "reminder": "Lembrete de consulta",
+    "calendarName": "MedAgenda – Consultas e exames"
   }
 }

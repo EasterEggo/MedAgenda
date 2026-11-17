@@ -134,38 +134,40 @@ function DetailsView({
   return (
     <>
       <dl className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-3 text-sm">
-        <dt className="font-semibold">{t("appointments.detail.when")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.when")}</dt>
         <dd>
           <time dateTime={appointment.startsAt}>
             {formatDateTime(appointment.startsAt, { locale, timeZone: tz })}
           </time>
         </dd>
-        <dt className="font-semibold">{t("appointments.detail.duration")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.duration")}</dt>
         <dd>{t("booking.catalog.duration", { minutes: durationMin })}</dd>
-        <dt className="font-semibold">{t("appointments.detail.professional")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.professional")}</dt>
         <dd>{appointment.provider.name}</dd>
-        <dt className="font-semibold">{t("appointments.detail.clinic")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.clinic")}</dt>
         <dd>{appointment.clinic.name}</dd>
-        <dt className="font-semibold">{t("appointments.detail.address")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.address")}</dt>
         <dd>{appointment.clinic.address}</dd>
-        <dt className="font-semibold">{t("appointments.detail.phone")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.phone")}</dt>
         <dd>{appointment.clinic.phone}</dd>
       </dl>
 
       {appointment.serviceType === "EXAM" ? (
         <section aria-labelledby="prep-heading" className="flex flex-col gap-1">
           <h4 id="prep-heading" className="font-semibold">
-            {t("appointments.detail.preparation")}
+            {t("calendar.appointments.detail.preparation")}
           </h4>
-          <p className="text-sm">{preparation ?? t("appointments.detail.noPreparation")}</p>
+          <p className="text-sm">
+            {preparation ?? t("calendar.appointments.detail.noPreparation")}
+          </p>
         </section>
       ) : null}
 
       <section aria-labelledby="notes-heading" className="flex flex-col gap-1">
         <h4 id="notes-heading" className="font-semibold">
-          {t("appointments.detail.notes")}
+          {t("calendar.appointments.detail.notes")}
         </h4>
-        <p className="text-sm">{appointment.notes || t("appointments.detail.noNotes")}</p>
+        <p className="text-sm">{appointment.notes || t("calendar.appointments.detail.noNotes")}</p>
       </section>
 
       {appointment.status === "SCHEDULED" ? (

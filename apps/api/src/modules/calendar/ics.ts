@@ -1,4 +1,5 @@
 import { createEvents, type EventAttributes } from "ics";
+import { translateCatalog, type Locale } from "@medagenda/shared";
 
 /**
  * The ICS leaves our encryption boundary (downloads, public feed). Only the fields below may be
@@ -22,42 +23,34 @@ export interface IcsAppointment {
   clinic: { name: string; address: string; phone: string; timezone: string };
 }
 
-export type IcsLocale = "pt-BR" | "en";
+export type IcsLocale = Locale;
 
-const TEXT = {
-  "pt-BR": {
-    CONSULTATION: "Consulta",
-    EXAM: "Exame",
-    phone: "Telefone da clínica",
-    prep: "Preparo",
-    reminder: "Lembrete de consulta",
-    calName: "MedAgenda – Consultas e exames",
-  },
-  en: {
-    CONSULTATION: "Appointment",
-    EXAM: "Exam",
-    phone: "Clinic phone",
-    prep: "Preparation",
-    reminder: "Appointment reminder",
-    calName: "MedAgenda – Appointments and exams",
-  },
+// Literal keys so `pnpm i18n:check` can see them. Names come from the appointment's own data.
+const KIND_KEY = {
+  CONSULTATION: "ics.kind.CONSULTATION",
+  EXAM: "ics.kind.EXAM",
 } as const;
 
 export function buildSummary(a: IcsAppointment, locale: IcsLocale): string {
-  const t = TEXT[locale];
+  const kind = translateCatalog(locale, KIND_KEY[a.serviceType]);
   const entity = a.serviceType === "EXAM" ? a.examType : a.specialty;
   const name = entity ? (locale === "en" ? entity.nameEn : entity.namePt) : "";
-  return `${t[a.serviceType]}${name ? ` – ${name}` : ""} (${a.providerName})`;
+  return name
+    ? translateCatalog(locale, "ics.summary", { kind, name, provider: a.providerName })
+    : translateCatalog(locale, "ics.summaryNoName", { kind, provider: a.providerName });
 }
 
 function toEvent(a: IcsAppointment, locale: IcsLocale): EventAttributes {
-  const t = TEXT[locale];
+  const reminder = translateCatalog(locale, "ics.reminder");
   const prep = a.examType
     ? locale === "en"
       ? a.examType.preparationEn
       : a.examType.preparationPt
     : null;
-  const description = [prep ? `${t.prep}: ${prep}` : null, `${t.phone}: ${a.clinic.phone}`]
+  const description = [
+    prep ? translateCatalog(locale, "ics.descriptionPreparation", { text: prep }) : null,
+    translateCatalog(locale, "ics.descriptionPhone", { phone: a.clinic.phone }),
+  ]
     .filter(Boolean)
     .join("\n");
   const summary = buildSummary(a, locale);
@@ -71,13 +64,16 @@ function toEvent(a: IcsAppointment, locale: IcsLocale): EventAttributes {
     endInputType: "utc",
     endOutputType: "utc",
     title: summary,
-    location: `${a.clinic.name}, ${a.clinic.address}`,
+    location: translateCatalog(locale, "ics.location", {
+      clinic: a.clinic.name,
+      address: a.clinic.address,
+    }),
     description,
     status: a.status === "CANCELLED" ? "CANCELLED" : "CONFIRMED",
     productId: "medagenda",
     alarms: [
-      { action: "display", description: t.reminder, trigger: { hours: 24, before: true } },
-      { action: "display", description: t.reminder, trigger: { hours: 2, before: true } },
+      { action: "display", description: reminder, trigger: { hours: 24, before: true } },
+      { action: "display", description: reminder, trigger: { hours: 2, before: true } },
     ],
   };
 }
@@ -91,7 +87,7 @@ export function buildIcs(
   const { error, value } = createEvents(
     appointments.map((a) => toEvent(a, locale)),
     {
-      calName: opts.calendarName ? TEXT[locale].calName : undefined,
+      calName: opts.calendarName ? translateCatalog(locale, "ics.calendarName") : undefined,
     },
   );
   if (error || !value) throw new Error("ICS generation failed");

@@ -11,7 +11,12 @@ const meta = (request: FastifyRequest) => ({
 });
 
 export async function appointmentRoutes(app: FastifyInstance): Promise<void> {
-  const service = createAppointmentsService({ prisma: app.prisma, log: app.log });
+  const service = createAppointmentsService({
+    prisma: app.prisma,
+    log: app.log,
+    mailer: app.mailer,
+    config: app.config,
+  });
   const pre = { preHandler: requireAuth({ mfa: true }) };
 
   app.post("/appointments", pre, async (request, reply) => {

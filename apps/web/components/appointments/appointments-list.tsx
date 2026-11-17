@@ -44,9 +44,13 @@ export function AppointmentsList() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">{t("appointments.title")}</h1>
+      <h1 className="text-2xl font-bold">{t("calendar.appointments.title")}</h1>
 
-      <div role="group" aria-label={t("appointments.filterLabel")} className="flex flex-wrap gap-2">
+      <div
+        role="group"
+        aria-label={t("calendar.appointments.filterLabel")}
+        className="flex flex-wrap gap-2"
+      >
         {FILTERS.map((value) => (
           <Button
             key={value}
@@ -55,7 +59,7 @@ export function AppointmentsList() {
             onClick={() => setFilter(value)}
             className={cn(filter === value && "border-primary bg-primary-bg text-primary")}
           >
-            {t(`appointments.filters.${value}`)}
+            {t(`calendar.appointments.filters.${value}`)}
           </Button>
         ))}
       </div>
@@ -74,7 +78,7 @@ export function AppointmentsList() {
         </div>
       ) : null}
       {query.isSuccess && items.length === 0 && !query.hasNextPage ? (
-        <p className="text-muted">{t(`appointments.empty.${filter}`)}</p>
+        <p className="text-muted">{t(`calendar.appointments.empty.${filter}`)}</p>
       ) : null}
 
       <ul className="flex flex-col gap-3">

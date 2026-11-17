@@ -65,20 +65,20 @@ export function StepConfirm({
     <form onSubmit={onFormSubmit} noValidate className="flex flex-col gap-6">
       <h2 className="text-lg font-semibold">{t("booking.confirm.title")}</h2>
       <dl className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-4 rounded-lg border border-slate-300 bg-card p-5 text-sm">
-        <dt className="font-semibold">{t("appointments.detail.service")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.service")}</dt>
         <dd className="flex flex-wrap items-center gap-2">
           <ServiceTypeBadge serviceType={state.serviceType} />
           <span className="font-medium">{name}</span>
         </dd>
-        <dt className="font-semibold">{t("appointments.detail.when")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.when")}</dt>
         <dd>
           <time dateTime={slot.startsAt}>{when}</time>
         </dd>
-        <dt className="font-semibold">{t("appointments.detail.duration")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.duration")}</dt>
         <dd>{t("booking.catalog.duration", { minutes: durationMin })}</dd>
-        <dt className="font-semibold">{t("appointments.detail.professional")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.professional")}</dt>
         <dd>{slot.provider.name}</dd>
-        <dt className="font-semibold">{t("appointments.detail.clinic")}</dt>
+        <dt className="font-semibold">{t("calendar.appointments.detail.clinic")}</dt>
         <dd>
           {slot.clinic.name} · {slot.clinic.city}
         </dd>
@@ -87,10 +87,10 @@ export function StepConfirm({
       {state.serviceType === "EXAM" ? (
         <section aria-labelledby="prep-heading" className="flex flex-col gap-2">
           <h3 id="prep-heading" className="text-base font-semibold">
-            {t("appointments.detail.preparation")}
+            {t("calendar.appointments.detail.preparation")}
           </h3>
           <p className="rounded-lg border border-slate-300 bg-background p-4 text-sm">
-            {preparation || t("appointments.detail.noPreparation")}
+            {preparation || t("calendar.appointments.detail.noPreparation")}
           </p>
         </section>
       ) : null}

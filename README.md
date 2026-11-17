@@ -70,13 +70,21 @@ Never commit the seed passwords, recovery codes or TOTP secrets.
 | ----------------- | --------------------------------------------------------------------------- |
 | `pnpm dev`        | Runs API and web in watch mode                                              |
 | `pnpm build`      | Builds all packages                                                         |
-| `pnpm lint`       | ESLint across the workspace                                                 |
+| `pnpm i18n:check` | Fails if the pt-BR and en catalogs differ or a catalog key is unused        |
+| `pnpm lint`       | `i18n:check`, then ESLint across the workspace                              |
+| `pnpm ci`         | `lint` + `typecheck` + `test`, the chain to run in CI                       |
 | `pnpm typecheck`  | `tsc --noEmit` across the workspace                                         |
 | `pnpm test`       | Vitest across the workspace                                                 |
 | `pnpm format`     | Prettier write                                                              |
 | `pnpm db:migrate` | Applies Prisma migrations (dev)                                             |
 | `pnpm db:seed`    | Idempotent seed: catalog, clinics, providers, slots, admin and demo patient |
 | `pnpm e2e`        | Builds the web app and runs the Playwright E2E suite (see below)            |
+
+## i18n
+
+Catalogs live in `packages/shared/i18n/{pt-BR,en}.json` with the namespaces `common`, `auth`, `booking`, `calendar`, `settings`, `errors`, `admin` and `ics`. The API reads the same files for emails and ICS (`translateCatalog` in `packages/shared`). Emails use the user's stored locale.
+
+`pnpm i18n:check` (`scripts/i18n-check.mts`) fails when the two locales have different keys, empty values or different `{placeholders}`, when `errors` does not match the shared `ErrorCodes` enum, or when a key is not referenced from `apps/web`, `apps/api` or `packages/shared`. Keys built at runtime (for example `t(\`admin.fields.${name}\`)`) must use a prefix listed in `DYNAMIC_PREFIXES` in that script.
 
 ## End-to-end tests (Playwright)
 

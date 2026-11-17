@@ -41,7 +41,7 @@ export function AppointmentItem({
       </div>
       {onOpen ? (
         <Button variant="outline" onClick={() => onOpen(appointment.id)} className="shrink-0">
-          {t("appointments.open")}
+          {t("calendar.appointments.open")}
           <span className="sr-only"> {appointmentName(appointment, locale)}</span>
         </Button>
       ) : null}

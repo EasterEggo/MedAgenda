@@ -7,8 +7,11 @@ import { decrypt, encrypt } from "../../lib/crypto.js";
 import { AppError, notFound } from "../../lib/errors.js";
 import { pageArgs, toPage } from "../../lib/paginate.js";
 import type { PrismaClient } from "../../lib/prisma.js";
-import { AAD } from "../auth/mappers.js";
+import type { ApiConfig } from "../../config.js";
+import type { Mailer } from "../../lib/mailer.js";
+import { AAD, fromDbUser } from "../auth/mappers.js";
 import type { RequestMeta } from "../auth/service.js";
+import { buildBookingConfirmation } from "./emails.js";
 
 const TX_OPTS = { maxWait: 20_000, timeout: 20_000 } as const;
 
@@ -23,6 +26,7 @@ const include = {
 } satisfies Prisma.AppointmentInclude;
 
 type ApptRow = Prisma.AppointmentGetPayload<{ include: typeof include }>;
+type AppointmentDto = ReturnType<typeof toDto>;
 
 function toDto(row: ApptRow, withNotes: boolean) {
   const { slot } = row;
@@ -105,8 +109,49 @@ function isUniqueViolation(e: unknown): boolean {
   return (e as { code?: string } | null)?.code === "P2002";
 }
 
-export function createAppointmentsService(deps: { prisma: PrismaClient; log: FastifyBaseLogger }) {
-  const { prisma, log } = deps;
+export function createAppointmentsService(deps: {
+  prisma: PrismaClient;
+  log: FastifyBaseLogger;
+  mailer: Mailer;
+  config: Pick<ApiConfig, "WEB_URL">;
+}) {
+  const { prisma, log, mailer, config } = deps;
+
+  /**
+   * Sends the booking confirmation in the user's stored locale. Fire-and-forget: a mail failure
+   * must never fail the booking. The log line is generic, so no address or appointment detail leaks.
+   */
+  function sendConfirmation(userId: string, appt: AppointmentDto) {
+    void (async () => {
+      const row = await prisma.user.findUnique({ where: { id: userId } });
+      if (!row) return;
+      const user = fromDbUser(row);
+      const en = user.locale === "en";
+      const entity = appt.serviceType === "EXAM" ? appt.examType : appt.specialty;
+      const message = buildBookingConfirmation(
+        user.locale,
+        user.email,
+        {
+          serviceType: appt.serviceType,
+          serviceName: entity ? (en ? entity.nameEn : entity.namePt) : null,
+          providerName: appt.provider.name,
+          clinicName: appt.clinic.name,
+          clinicAddress: appt.clinic.address,
+          timezone: appt.clinic.timezone,
+          startsAt: appt.startsAt,
+          preparation: appt.examType
+            ? en
+              ? appt.examType.preparationEn
+              : appt.examType.preparationPt
+            : null,
+        },
+        `${config.WEB_URL}/${user.locale}/app/appointments`,
+      );
+      await mailer.send(message);
+    })().catch(() => {
+      log.error("failed to send booking confirmation"); // never log the message: it has personal data
+    });
+  }
 
   async function getOwned(userId: string, id: string): Promise<ApptRow> {
     // Ownership is part of the query: someone else's id is indistinguishable from a missing one.
@@ -147,7 +192,9 @@ export function createAppointmentsService(deps: { prisma: PrismaClient; log: Fas
         ip: meta.ip,
         meta: { appointmentId: id, slotId: input.slotId },
       });
-      return toDto(await getOwned(userId, id), true);
+      const created = toDto(await getOwned(userId, id), true);
+      sendConfirmation(userId, created);
+      return created;
     },
 
     async list(

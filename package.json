@@ -9,7 +9,9 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "lint": "turbo run lint",
+    "lint": "pnpm i18n:check && turbo run lint",
+    "i18n:check": "node --experimental-strip-types scripts/i18n-check.mts",
+    "ci": "pnpm lint && pnpm typecheck && pnpm test",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "format": "prettier --write .",
