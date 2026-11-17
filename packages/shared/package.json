@@ -1,0 +1,23 @@
+{
+  "name": "@medagenda/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./i18n/*": "./i18n/*"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "4.6.6"
+  },
+  "devDependencies": {
+    "@medagenda/config": "workspace:*",
+    "eslint": "9.39.5",
+    "vitest": "4.1.12"
+  }
+}

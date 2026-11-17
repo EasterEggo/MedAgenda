@@ -1,0 +1,7 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# esbuild ships a postinstall step that verifies its native binary (used by tsup, tsx and vitest).
+allowBuilds:
+  esbuild: true

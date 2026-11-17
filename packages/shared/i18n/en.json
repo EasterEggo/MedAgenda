@@ -1,0 +1,7 @@
+{
+  "common": {
+    "appName": "MedAgenda",
+    "tagline": "All your medical appointments and exams in one place.",
+    "apiHealthLink": "API status"
+  }
+}
