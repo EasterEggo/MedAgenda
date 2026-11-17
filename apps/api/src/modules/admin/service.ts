@@ -1,6 +1,7 @@
 import type { FastifyBaseLogger } from "fastify";
 import type { Prisma } from "@prisma/client";
 import type { z } from "zod";
+import { pageArgs, toPage } from "../../lib/paginate.js";
 import { audit } from "../../lib/audit.js";
 import { AppError, notFound } from "../../lib/errors.js";
 import type { PrismaClient } from "../../lib/prisma.js";
@@ -10,6 +11,7 @@ import type {
   ClinicInputSchema,
   ClinicPatchSchema,
   ExamInputSchema,
+  AdminSlotsQuerySchema,
   ExamPatchSchema,
   GenerateSlotsSchema,
   ProviderInputSchema,
@@ -226,6 +228,29 @@ export function createAdminService(deps: { prisma: PrismaClient; log: FastifyBas
       const res = await prisma.slot.createMany({ data, skipDuplicates: true });
       await record(uid, meta, "slot", "generate", provider.id);
       return { requested: data.length, created: res.count, skipped: data.length - res.count };
+    },
+
+    /** Slots of one provider in any status (the public listing only shows OPEN ones). */
+    async listSlots(q: In<typeof AdminSlotsQuerySchema>) {
+      const provider = await prisma.provider.findUnique({
+        where: { id: q.providerId },
+        include: { clinic: { select: { timezone: true } } },
+      });
+      if (!provider) throw notFound();
+      const tz = provider.clinic.timezone;
+      const rows = await prisma.slot.findMany({
+        where: {
+          providerId: q.providerId,
+          startsAt: {
+            gte: zonedToUtc(q.from, 0, tz),
+            lt: zonedToUtc(q.to, 1440, tz),
+          },
+          ...(q.status ? { status: q.status } : {}),
+        },
+        orderBy: [{ startsAt: "asc" }, { id: "asc" }],
+        ...pageArgs(q),
+      });
+      return toPage(rows, q.limit);
     },
 
     async setSlotStatus(uid: string, id: string, status: "OPEN" | "BLOCKED", meta: RequestMeta) {

@@ -28,7 +28,9 @@
       "logout": "Sair",
       "book": "Agendar",
       "calendar": "Calendário",
-      "appointments": "Atendimentos"
+      "appointments": "Atendimentos",
+      "settings": "Configurações",
+      "admin": "Administração"
     },
     "footer": {
       "rights": "MedAgenda. Todos os direitos reservados.",
@@ -290,8 +292,169 @@
       "heading": "Adicionar ao seu calendário"
     }
   },
-  "settings": {},
-  "admin": {},
+  "settings": {
+    "title": "Configurações",
+    "profile": {
+      "title": "Perfil",
+      "description": "Seus dados pessoais. E-mail e CPF não podem ser alterados aqui.",
+      "email": "E-mail",
+      "fullName": "Nome completo",
+      "birthDate": "Data de nascimento",
+      "phone": "Telefone",
+      "healthInsurance": "Plano de saúde (opcional)",
+      "saved": "Perfil salvo."
+    },
+    "language": {
+      "title": "Idioma",
+      "label": "Idioma da interface"
+    },
+    "mfa": {
+      "title": "Autenticação em dois fatores",
+      "description": "Proteja sua conta com um código de um app autenticador.",
+      "enabledDescription": "A autenticação em dois fatores está ativa na sua conta.",
+      "start": "Configurar autenticação em dois fatores",
+      "scanInstructions": "Leia o QR code com seu app autenticador e digite o código de 6 dígitos exibido.",
+      "qrAlt": "QR code para adicionar o MedAgenda ao seu app autenticador",
+      "manualSecret": "Chave secreta (digitação manual)",
+      "manualHint": "Use se não conseguir ler o QR code.",
+      "otpauthUri": "Link de configuração (otpauth)",
+      "code": "Código de 6 dígitos",
+      "enable": "Ativar",
+      "enabledSuccess": "Autenticação em dois fatores ativada.",
+      "recoveryTitle": "Seus códigos de recuperação",
+      "recoveryWarning": "Guarde estes códigos em um lugar seguro. Cada um vale uma única vez se você perder o autenticador. Eles não serão exibidos novamente.",
+      "recoverySaved": "Eu guardei meus códigos de recuperação",
+      "recoveryDone": "Concluir",
+      "disableTitle": "Desativar autenticação em dois fatores",
+      "disableHelp": "Confirme com sua senha e um código atual.",
+      "password": "Senha",
+      "disable": "Desativar"
+    },
+    "sessions": {
+      "title": "Sessões ativas",
+      "description": "Dispositivos conectados à sua conta. Encerre os que você não reconhece.",
+      "current": "Este dispositivo",
+      "unknownDevice": "Dispositivo desconhecido",
+      "lastUsed": "Último uso: {date}",
+      "revoke": "Encerrar sessão"
+    },
+    "feed": {
+      "title": "Assinatura de calendário",
+      "description": "Um link privado que mantém o Google Agenda (ou outro app) atualizado com suas consultas.",
+      "create": "Criar link",
+      "rotate": "Criar um novo link",
+      "revoke": "Revogar link",
+      "revoked": "O link foi revogado e não funciona mais.",
+      "urlLabel": "Link de assinatura",
+      "copy": "Copiar link",
+      "copied": "Link copiado.",
+      "subscribeGoogle": "Assinar no Google Agenda",
+      "newTab": "(abre em nova aba)",
+      "localWarning": "Trate este link como uma senha. O Google só consegue lê-lo se a API estiver acessível pela internet. Criar um novo link substitui o anterior.",
+      "howTitle": "Como assinar no Google Agenda",
+      "step1": "Crie o link acima e copie-o.",
+      "step2": "Abra o Google Agenda em um computador e vá em Outras agendas, depois Por URL.",
+      "step3": "Cole o link e escolha Adicionar agenda.",
+      "step4": "Ou apenas use o botão Assinar no Google Agenda. O Google atualiza agendas assinadas a cada algumas horas."
+    },
+    "data": {
+      "title": "Seus dados",
+      "description": "Pela LGPD, você pode baixar ou excluir tudo o que guardamos sobre você.",
+      "export": "Exportar meus dados",
+      "exporting": "Preparando arquivo…",
+      "deleteTitle": "Excluir conta",
+      "deleteWarning": "Isso apaga seus dados pessoais, encerra todas as sessões e cancela consultas futuras. Não é possível desfazer.",
+      "delete": "Excluir minha conta",
+      "deletePassword": "Confirme sua senha",
+      "deleteConfirm": "Excluir definitivamente"
+    }
+  },
+  "admin": {
+    "navLabel": "Administração",
+    "sections": {
+      "specialties": "Especialidades",
+      "exams": "Tipos de exame",
+      "clinics": "Clínicas",
+      "providers": "Profissionais",
+      "slots": "Horários"
+    },
+    "fields": {
+      "slug": "Slug",
+      "namePt": "Nome (português)",
+      "nameEn": "Nome (inglês)",
+      "preparationPt": "Preparo (português)",
+      "preparationEn": "Preparo (inglês)",
+      "durationMin": "Duração (min)",
+      "name": "Nome",
+      "address": "Endereço",
+      "city": "Cidade",
+      "state": "Estado",
+      "phone": "Telefone",
+      "timezone": "Fuso horário",
+      "clinicId": "Clínica",
+      "crm": "CRM (opcional)",
+      "kind": "Tipo",
+      "bioPt": "Bio (português)",
+      "bioEn": "Bio (inglês)",
+      "specialtyIds": "Especialidades",
+      "examTypeIds": "Tipos de exame",
+      "providerId": "Profissional",
+      "weekdays": "Dias da semana",
+      "startTime": "Início",
+      "endTime": "Fim",
+      "from": "De",
+      "to": "Até",
+      "serviceType": "Tipo de serviço",
+      "specialtyId": "Especialidade",
+      "examTypeId": "Tipo de exame"
+    },
+    "hints": {
+      "slug": "Apenas letras minúsculas, números e hífens."
+    },
+    "kinds": {
+      "DOCTOR": "Médico",
+      "EXAM_RESOURCE": "Recurso de exame"
+    },
+    "choose": "Escolha…",
+    "new": "Novo",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "confirmDelete": "Confirmar exclusão",
+    "actions": "Ações",
+    "weekdays": {
+      "0": "Domingo",
+      "1": "Segunda",
+      "2": "Terça",
+      "3": "Quarta",
+      "4": "Quinta",
+      "5": "Sexta",
+      "6": "Sábado"
+    },
+    "slots": {
+      "generateTitle": "Gerar horários",
+      "generate": "Gerar",
+      "generated": "{created} horários criados, {skipped} já existiam.",
+      "listTitle": "Bloquear ou desbloquear horários",
+      "pickProvider": "Escolha um profissional para ver os horários.",
+      "empty": "Nenhum horário neste período.",
+      "when": "Data e hora",
+      "status": "Situação",
+      "statuses": {
+        "OPEN": "Livre",
+        "BOOKED": "Reservado",
+        "BLOCKED": "Bloqueado"
+      },
+      "block": "Bloquear",
+      "unblock": "Desbloquear"
+    },
+    "forbidden": {
+      "title": "Acesso restrito",
+      "adminOnly": "Esta área é apenas para administradores.",
+      "mfaRequired": "Administradores precisam ativar a autenticação em dois fatores para usar esta área.",
+      "goSettings": "Ir para configurações",
+      "goDashboard": "Voltar ao painel"
+    }
+  },
   "ics": {},
   "appointments": {
     "title": "Meus atendimentos",

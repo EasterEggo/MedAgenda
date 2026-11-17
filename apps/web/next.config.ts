@@ -30,6 +30,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // E2E builds into a separate directory so they never clobber a running `next dev`.
+  distDir: process.env.NEXT_DIST_DIR ?? ".next",
   reactStrictMode: true,
   poweredByHeader: false,
   // @medagenda/shared ships TypeScript source, so Next must compile it.

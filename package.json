@@ -15,7 +15,8 @@
     "format": "prettier --write .",
     "keys:generate": "pnpm --filter @medagenda/api keys:generate",
     "db:migrate": "pnpm --filter @medagenda/api db:migrate",
-    "db:seed": "pnpm --filter @medagenda/api db:seed"
+    "db:seed": "pnpm --filter @medagenda/api db:seed",
+    "e2e": "pnpm --filter @medagenda/web e2e"
   },
   "devDependencies": {
     "@medagenda/config": "workspace:*",

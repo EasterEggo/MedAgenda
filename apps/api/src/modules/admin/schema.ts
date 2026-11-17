@@ -3,6 +3,7 @@ export {
   ClinicPatchSchema,
   ExamInputSchema,
   ExamPatchSchema,
+  AdminSlotsQuerySchema,
   GenerateSlotsSchema,
   ProviderInputSchema,
   ProviderPatchSchema,

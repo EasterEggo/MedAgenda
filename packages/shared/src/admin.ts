@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { IdSchema, ServiceTypeSchema } from "./catalog.js";
+import { IdSchema, PaginationSchema, ServiceTypeSchema } from "./catalog.js";
 
 const Name = z.string().trim().min(1).max(200);
 const Slug = z
@@ -102,3 +102,15 @@ export const GenerateSlotsSchema = z
   );
 
 export const SlotPatchSchema = z.object({ status: z.enum(["OPEN", "BLOCKED"]) });
+
+/** Admin slot listing: every status, a single provider, a bounded date range (calendar dates). */
+export const AdminSlotsQuerySchema = PaginationSchema.extend({
+  providerId: IdSchema,
+  from: z.iso.date(),
+  to: z.iso.date(),
+  status: z.enum(["OPEN", "BOOKED", "BLOCKED"]).optional(),
+})
+  .refine((v) => v.to >= v.from, { message: "VALIDATION_ERROR" })
+  .refine((v) => (Date.parse(v.to) - Date.parse(v.from)) / 86_400_000 + 1 <= 31, {
+    message: "DATE_RANGE_TOO_LARGE",
+  });

@@ -3,6 +3,7 @@ import { IdParamSchema } from "@medagenda/shared";
 import { parse } from "../../lib/validate.js";
 import { requireAuth, requireRole } from "../auth/guards.js";
 import {
+  AdminSlotsQuerySchema,
   ClinicInputSchema,
   ClinicPatchSchema,
   ExamInputSchema,
@@ -90,6 +91,8 @@ export async function adminRoutes(app: FastifyInstance): Promise<void> {
       .code(201)
       .send(await s.generateSlots(uid(r), parse(GenerateSlotsSchema, r.body), meta(r))),
   );
+
+  app.get("/admin/slots", pre, async (r) => s.listSlots(parse(AdminSlotsQuerySchema, r.query)));
 
   app.patch("/admin/slots/:id", pre, async (r) =>
     s.setSlotStatus(uid(r), id(r), parse(SlotPatchSchema, r.body).status, meta(r)),

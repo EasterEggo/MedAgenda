@@ -1,31 +1,13 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useQueryClient } from "@tanstack/react-query";
-import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing, type AppLocale } from "@/i18n/routing";
-import { meApi } from "@/lib/api/endpoints";
-
-const ONE_YEAR = 60 * 60 * 24 * 365;
+import { useChangeLocale } from "./use-change-locale";
 
 export function LanguageSwitcher() {
   const t = useTranslations("common");
   const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
-  const queryClient = useQueryClient();
-
-  function onChange(next: AppLocale) {
-    document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=${ONE_YEAR}; samesite=lax`;
-    // Persist to the account when logged in; failures (not logged in) are ignored.
-    if (queryClient.getQueryData(["me"])) {
-      void meApi
-        .updateLocale(next)
-        .then(() => queryClient.invalidateQueries({ queryKey: ["me"] }))
-        .catch(() => undefined);
-    }
-    router.replace(pathname, { locale: next });
-  }
+  const onChange = useChangeLocale();
 
   return (
     <div className="flex items-center gap-2">

@@ -232,6 +232,8 @@ describe("per-IP rate limit", () => {
       for (let i = 0; i < 3; i++) expect((await c.login(uniqueEmail())).statusCode).toBe(401);
       const res = await c.login(uniqueEmail());
       expect([res.statusCode, errorCode(res)]).toEqual([429, "RATE_LIMITED"]);
+      // Same uniform envelope as every other error: no string-valued `error`.
+      expect(res.json()).toEqual({ error: { code: "RATE_LIMITED" } });
       // A different IP is unaffected.
       expect((await new Client(limited, "203.0.113.10").login(uniqueEmail())).statusCode).toBe(401);
     } finally {

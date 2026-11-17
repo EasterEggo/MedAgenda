@@ -7,6 +7,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { appointmentsApi, calendarApi, type Appointment } from "@/lib/api/endpoints";
 import { errorMessageKey, toApiError } from "@/lib/api/client";
+import { saveBlob } from "@/lib/download";
 import { appointmentName, googleAddUrl } from "@/lib/appointments";
 
 /**
@@ -32,14 +33,7 @@ export function CalendarLinks({ appointment }: { appointment: Appointment }) {
     setError(null);
     try {
       const { blob, filename } = await appointmentsApi.downloadIcs(appointment.id);
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename ?? "consulta.ics";
-      document.body.append(link);
-      link.click();
-      link.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      saveBlob(blob, filename ?? "consulta.ics");
     } catch (e) {
       setError(errorMessageKey(toApiError(e).code));
     } finally {

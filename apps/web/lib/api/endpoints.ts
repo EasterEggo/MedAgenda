@@ -18,7 +18,34 @@ export interface MeResponse {
   emailVerifiedAt: string | null;
   totpEnabled: boolean;
   createdAt: string;
-  profile: Record<string, unknown> | null;
+  profile: Profile | null;
+}
+
+export interface Profile {
+  fullName: string;
+  cpf: string | null;
+  birthDate: string;
+  phone: string;
+  healthInsurance: string | null;
+  consentLgpdAt: string | null;
+  consentVersion: string | null;
+}
+
+export interface UpdateProfileInput {
+  fullName?: string;
+  birthDate?: string;
+  phone?: string;
+  healthInsurance?: string | null;
+}
+
+export interface SessionInfo {
+  id: string;
+  createdAt: string;
+  lastUsedAt: string;
+  expiresAt: string;
+  userAgent: string | null;
+  mfaPassed: boolean;
+  current: boolean;
 }
 
 /** Cursor page as returned by every list endpoint. */
@@ -158,7 +185,23 @@ export const authApi = {
 
 export const meApi = {
   get: () => api.get<MeResponse>("/me"),
+  update: (input: UpdateProfileInput) => api.patch<MeResponse>("/me", input),
   updateLocale: (locale: Locale) => api.patch<{ locale: Locale }>("/me/locale", { locale }),
+  /** LGPD export (decrypted JSON), as a downloadable blob. */
+  exportData: () => api.download("/me/export"),
+  deleteAccount: (password: string) => api.delete<{ ok: true }>("/me", { password }),
+};
+
+export const mfaApi = {
+  setup: () => api.post<{ otpauthUri: string; qrDataUrl: string }>("/auth/mfa/setup"),
+  enable: (code: string) => api.post<{ recoveryCodes: string[] }>("/auth/mfa/enable", { code }),
+  disable: (input: { password: string; code: string }) =>
+    api.post<{ ok: true }>("/auth/mfa/disable", input),
+};
+
+export const sessionsApi = {
+  list: () => api.get<{ sessions: SessionInfo[] }>("/auth/sessions"),
+  revoke: (id: string) => api.delete<{ ok: true }>(`/auth/sessions/${encodeURIComponent(id)}`),
 };
 
 export const catalogApi = {
@@ -192,4 +235,49 @@ export const appointmentsApi = {
 export const calendarApi = {
   /** Creates the subscription URL. Calling it again rotates the token and invalidates the old URL. */
   createFeed: () => api.post<{ url: string }>("/calendar/feed"),
+  revokeFeed: () => api.delete<void>("/calendar/feed"),
+};
+
+export type AdminEntity = "specialties" | "exams" | "clinics" | "providers";
+
+export interface AdminSlot {
+  id: string;
+  providerId: string;
+  startsAt: string;
+  endsAt: string;
+  serviceType: ServiceType;
+  specialtyId: string | null;
+  examTypeId: string | null;
+  status: "OPEN" | "BOOKED" | "BLOCKED";
+}
+
+export interface GenerateSlotsInput {
+  providerId: string;
+  weekdays: number[];
+  startTime: string;
+  endTime: string;
+  durationMin: number;
+  from: string;
+  to: string;
+  serviceType: ServiceType;
+  specialtyId?: string;
+  examTypeId?: string;
+}
+
+export const adminApi = {
+  create: (entity: AdminEntity, body: unknown) =>
+    api.post<{ id: string }>(`/admin/${entity}`, body),
+  update: (entity: AdminEntity, id: string, body: unknown) =>
+    api.patch<{ id: string }>(`/admin/${entity}/${encodeURIComponent(id)}`, body),
+  remove: (entity: AdminEntity, id: string) =>
+    api.delete<void>(`/admin/${entity}/${encodeURIComponent(id)}`),
+  generateSlots: (input: GenerateSlotsInput) =>
+    api.post<{ requested: number; created: number; skipped: number }>(
+      "/admin/slots/generate",
+      input,
+    ),
+  slots: (params: { providerId: string; from: string; to: string; cursor?: string }) =>
+    api.get<Page<AdminSlot>>("/admin/slots", { query: { ...params, limit: 200 } }),
+  setSlotStatus: (id: string, status: "OPEN" | "BLOCKED") =>
+    api.patch<AdminSlot>(`/admin/slots/${encodeURIComponent(id)}`, { status }),
 };

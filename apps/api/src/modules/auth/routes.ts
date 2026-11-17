@@ -13,6 +13,7 @@ import {
   VerifyEmailSchema,
   type LoginResponse,
 } from "@medagenda/shared";
+import { AppError } from "../../lib/errors.js";
 import { parse } from "../../lib/validate.js";
 import { requireAuth } from "./guards.js";
 import { SESSION_COOKIE } from "./guards.js";
@@ -51,11 +52,8 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
   await app.register(rateLimit, {
     global: false,
     keyGenerator: (request) => request.ip,
-    errorResponseBuilder: () => ({
-      statusCode: 429,
-      error: "RATE_LIMITED",
-      message: "RATE_LIMITED",
-    }),
+    // Thrown into the app error handler, which renders `{ error: { code: "RATE_LIMITED" } }`.
+    errorResponseBuilder: () => new AppError("RATE_LIMITED", 429),
   });
   const limited = {
     config: { rateLimit: { max: app.config.AUTH_RATE_LIMIT_MAX, timeWindow: "1 minute" } },

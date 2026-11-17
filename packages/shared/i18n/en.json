@@ -28,7 +28,9 @@
       "logout": "Sign out",
       "book": "Book",
       "calendar": "Calendar",
-      "appointments": "Appointments"
+      "appointments": "Appointments",
+      "settings": "Settings",
+      "admin": "Admin"
     },
     "footer": {
       "rights": "MedAgenda. All rights reserved.",
@@ -290,8 +292,169 @@
       "heading": "Add to your calendar"
     }
   },
-  "settings": {},
-  "admin": {},
+  "settings": {
+    "title": "Settings",
+    "profile": {
+      "title": "Profile",
+      "description": "Your personal data. Email and CPF cannot be changed here.",
+      "email": "Email",
+      "fullName": "Full name",
+      "birthDate": "Date of birth",
+      "phone": "Phone",
+      "healthInsurance": "Health insurance (optional)",
+      "saved": "Profile saved."
+    },
+    "language": {
+      "title": "Language",
+      "label": "Interface language"
+    },
+    "mfa": {
+      "title": "Two-factor authentication",
+      "description": "Protect your account with a code from an authenticator app.",
+      "enabledDescription": "Two-factor authentication is on for your account.",
+      "start": "Set up two-factor authentication",
+      "scanInstructions": "Scan the QR code with your authenticator app, then enter the 6-digit code it shows.",
+      "qrAlt": "QR code to add MedAgenda to your authenticator app",
+      "manualSecret": "Secret key (manual entry)",
+      "manualHint": "Use this if you cannot scan the QR code.",
+      "otpauthUri": "Setup link (otpauth)",
+      "code": "6-digit code",
+      "enable": "Turn on",
+      "enabledSuccess": "Two-factor authentication is now on.",
+      "recoveryTitle": "Your recovery codes",
+      "recoveryWarning": "Save these codes somewhere safe. Each one works once if you lose your authenticator. They will not be shown again.",
+      "recoverySaved": "I saved my recovery codes",
+      "recoveryDone": "Done",
+      "disableTitle": "Turn off two-factor authentication",
+      "disableHelp": "Confirm with your password and a current code.",
+      "password": "Password",
+      "disable": "Turn off"
+    },
+    "sessions": {
+      "title": "Active sessions",
+      "description": "Devices signed in to your account. Sign out the ones you do not recognise.",
+      "current": "This device",
+      "unknownDevice": "Unknown device",
+      "lastUsed": "Last used: {date}",
+      "revoke": "Sign out"
+    },
+    "feed": {
+      "title": "Calendar subscription",
+      "description": "A private link that keeps Google Calendar (or any calendar app) up to date with your appointments.",
+      "create": "Create link",
+      "rotate": "Create a new link",
+      "revoke": "Revoke link",
+      "revoked": "The link was revoked and no longer works.",
+      "urlLabel": "Subscription link",
+      "copy": "Copy link",
+      "copied": "Link copied.",
+      "subscribeGoogle": "Subscribe in Google Calendar",
+      "newTab": "(opens in a new tab)",
+      "localWarning": "Treat this link like a password. Google can only read it if the API is reachable from the internet. Creating a new link replaces the old one.",
+      "howTitle": "How to subscribe in Google Calendar",
+      "step1": "Create the link above and copy it.",
+      "step2": "Open Google Calendar on a computer and go to Other calendars, then From URL.",
+      "step3": "Paste the link and choose Add calendar.",
+      "step4": "Or just press Subscribe in Google Calendar. Google refreshes subscribed calendars every few hours."
+    },
+    "data": {
+      "title": "Your data",
+      "description": "Under the LGPD you can download or delete everything we hold about you.",
+      "export": "Export my data",
+      "exporting": "Preparing file…",
+      "deleteTitle": "Delete account",
+      "deleteWarning": "This erases your personal data, signs you out everywhere and cancels future appointments. It cannot be undone.",
+      "delete": "Delete my account",
+      "deletePassword": "Confirm your password",
+      "deleteConfirm": "Permanently delete"
+    }
+  },
+  "admin": {
+    "navLabel": "Administration",
+    "sections": {
+      "specialties": "Specialties",
+      "exams": "Exam types",
+      "clinics": "Clinics",
+      "providers": "Providers",
+      "slots": "Slots"
+    },
+    "fields": {
+      "slug": "Slug",
+      "namePt": "Name (Portuguese)",
+      "nameEn": "Name (English)",
+      "preparationPt": "Preparation (Portuguese)",
+      "preparationEn": "Preparation (English)",
+      "durationMin": "Duration (min)",
+      "name": "Name",
+      "address": "Address",
+      "city": "City",
+      "state": "State",
+      "phone": "Phone",
+      "timezone": "Time zone",
+      "clinicId": "Clinic",
+      "crm": "CRM (optional)",
+      "kind": "Kind",
+      "bioPt": "Bio (Portuguese)",
+      "bioEn": "Bio (English)",
+      "specialtyIds": "Specialties",
+      "examTypeIds": "Exam types",
+      "providerId": "Provider",
+      "weekdays": "Weekdays",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "from": "From",
+      "to": "To",
+      "serviceType": "Service type",
+      "specialtyId": "Specialty",
+      "examTypeId": "Exam type"
+    },
+    "hints": {
+      "slug": "Lowercase letters, digits and dashes only."
+    },
+    "kinds": {
+      "DOCTOR": "Doctor",
+      "EXAM_RESOURCE": "Exam resource"
+    },
+    "choose": "Choose…",
+    "new": "New",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Confirm delete",
+    "actions": "Actions",
+    "weekdays": {
+      "0": "Sunday",
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday"
+    },
+    "slots": {
+      "generateTitle": "Generate slots",
+      "generate": "Generate",
+      "generated": "{created} slots created, {skipped} already existed.",
+      "listTitle": "Block or unblock slots",
+      "pickProvider": "Choose a provider to see their slots.",
+      "empty": "No slots in this period.",
+      "when": "Date and time",
+      "status": "Status",
+      "statuses": {
+        "OPEN": "Open",
+        "BOOKED": "Booked",
+        "BLOCKED": "Blocked"
+      },
+      "block": "Block",
+      "unblock": "Unblock"
+    },
+    "forbidden": {
+      "title": "Access restricted",
+      "adminOnly": "This area is only for administrators.",
+      "mfaRequired": "Administrators must turn on two-factor authentication before using this area.",
+      "goSettings": "Go to settings",
+      "goDashboard": "Back to dashboard"
+    }
+  },
   "ics": {},
   "appointments": {
     "title": "My appointments",

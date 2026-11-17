@@ -10,6 +10,7 @@ const API_CODES = new Set<string>([
   "INVALID_CPF",
   "CONSENT_REQUIRED",
   "VALIDATION_ERROR",
+  "DATE_RANGE_TOO_LARGE",
 ]);
 
 /** Translates one Zod issue into an i18n key. Issue messages that equal an API error code map to `errors.<CODE>`. */

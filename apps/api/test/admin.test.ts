@@ -130,6 +130,22 @@ describe("admin", () => {
     ).toBe(400);
     const wide = await client.post("/admin/slots/generate", { ...body, to: "2099-01-01" });
     expect(errorCode(wide)).toBe("DATE_RANGE_TOO_LARGE");
+    // admin listing returns every status, in the requested range only
+    const listed = await client.get(
+      `/admin/slots?providerId=${fx.provider.id}&from=${base}&to=${base}`,
+    );
+    expect(listed.statusCode).toBe(200);
+    const items = listed.json().items as { id: string; status: string }[];
+    expect(items).toHaveLength(6);
+    await client.request("PATCH", `/admin/slots/${items[0]!.id}`, { status: "BLOCKED" });
+    const blocked = await client.get(
+      `/admin/slots?providerId=${fx.provider.id}&from=${base}&to=${end}&status=BLOCKED`,
+    );
+    expect(blocked.json().items).toHaveLength(1);
+    expect(
+      (await client.get(`/admin/slots?providerId=${fx.provider.id}&from=${base}&to=2099-01-01`))
+        .statusCode,
+    ).toBe(400);
     // provider does not offer this specialty
     const other = await env.prisma.specialty.create({
       data: { slug: `o-${Math.random()}`, namePt: "O", nameEn: "O" },
