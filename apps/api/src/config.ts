@@ -7,6 +7,7 @@ const EnvSchema = z.object({
   API_PORT: z.coerce.number().int().positive().default(3001),
   DATABASE_URL: z.string().min(1),
   WEB_URL: z.string().url().default("http://localhost:3000"),
+  PUBLIC_API_URL: z.string().url().default("http://localhost:3001"),
   CORS_ORIGINS: z.string().default("http://localhost:3000"),
   TRUST_PROXY: z
     .enum(["true", "false"])

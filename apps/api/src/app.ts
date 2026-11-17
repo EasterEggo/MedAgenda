@@ -11,6 +11,7 @@ import type { PrismaClient } from "./lib/prisma.js";
 import { SESSION_COOKIE } from "./modules/auth/guards.js";
 import { adminRoutes } from "./modules/admin/routes.js";
 import { appointmentRoutes } from "./modules/appointments/routes.js";
+import { calendarRoutes } from "./modules/calendar/routes.js";
 import { catalogRoutes } from "./modules/catalog/routes.js";
 import { authRoutes } from "./modules/auth/routes.js";
 import { meRoutes } from "./modules/me/routes.js";
@@ -129,6 +130,7 @@ export async function buildApp(options: BuildAppOptions): Promise<FastifyInstanc
       await v1.register(meRoutes);
       await v1.register(catalogRoutes);
       await v1.register(appointmentRoutes);
+      await v1.register(calendarRoutes);
       await v1.register(adminRoutes);
     },
     { prefix: "/api/v1" },

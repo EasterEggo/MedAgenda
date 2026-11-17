@@ -6,3 +6,4 @@ export * from "./catalog.js";
 export * from "./appointments.js";
 export * from "./profile.js";
 export * from "./admin.js";
+export * from "./google-calendar.js";
