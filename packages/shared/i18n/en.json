@@ -15,7 +15,9 @@
       "submit": "Submit",
       "cancel": "Cancel",
       "save": "Save",
-      "close": "Close"
+      "close": "Close",
+      "retry": "Try again",
+      "loadMore": "Load more"
     },
     "nav": {
       "main": "Main navigation",
@@ -23,7 +25,10 @@
       "login": "Sign in",
       "register": "Create account",
       "dashboard": "Dashboard",
-      "logout": "Sign out"
+      "logout": "Sign out",
+      "book": "Book",
+      "calendar": "Calendar",
+      "appointments": "Appointments"
     },
     "footer": {
       "rights": "MedAgenda. All rights reserved.",
@@ -44,7 +49,16 @@
     "dashboard": {
       "title": "Dashboard",
       "welcome": "Welcome to MedAgenda.",
-      "placeholder": "Your upcoming appointments will show up here."
+      "upcoming": "Next appointments",
+      "empty": "You have no upcoming appointments.",
+      "bookConsultation": "Book consultation",
+      "bookExam": "Book exam",
+      "viewAll": "View all appointments",
+      "quickBook": "Quick booking"
+    },
+    "serviceType": {
+      "CONSULTATION": "Consultation",
+      "EXAM": "Exam"
     }
   },
   "auth": {
@@ -161,9 +175,156 @@
     "NETWORK_ERROR": "Cannot reach the server. Check your connection.",
     "UNKNOWN": "An unexpected error occurred."
   },
-  "booking": {},
-  "calendar": {},
+  "booking": {
+    "title": "Book an appointment",
+    "progress": "Step {current} of {total}: {name}",
+    "steps": {
+      "type": "Type",
+      "catalog": "Specialty or exam",
+      "location": "Location",
+      "provider": "Professional",
+      "slot": "Date and time",
+      "confirm": "Confirm",
+      "done": "Done"
+    },
+    "type": {
+      "title": "What do you need?",
+      "consultation": "Consultation",
+      "consultationText": "See a doctor. Visits last 30 minutes.",
+      "exam": "Exam",
+      "examText": "Lab tests and imaging. Duration depends on the exam."
+    },
+    "catalog": {
+      "specialtyTitle": "Choose a specialty",
+      "examTitle": "Choose an exam",
+      "search": "Search by name",
+      "empty": "Nothing matches your search.",
+      "duration": "{minutes} min"
+    },
+    "location": {
+      "title": "Where do you want to be seen?",
+      "hint": "Optional. Leave both on 'all' to see every clinic.",
+      "city": "City",
+      "allCities": "All cities",
+      "clinic": "Clinic",
+      "allClinics": "All clinics"
+    },
+    "provider": {
+      "title": "Choose a professional",
+      "any": "Any available",
+      "anyText": "Shows the first open time with any professional who offers this.",
+      "empty": "No professional matches this filter. Try another clinic or city.",
+      "doctor": "Doctor",
+      "resource": "Exam service",
+      "crm": "CRM {crm}"
+    },
+    "slot": {
+      "title": "Pick a date and time",
+      "range": "{start} to {end}",
+      "previous": "Previous week",
+      "next": "Next week",
+      "loading": "Loading open times…",
+      "empty": "No open times in this period.",
+      "limit": "Booking is open for up to four weeks ahead.",
+      "option": "{time} with {provider}",
+      "selected": "Selected"
+    },
+    "confirm": {
+      "title": "Review your booking",
+      "notes": "Notes (optional)",
+      "notesHint": "Stored encrypted. Only you can see them.",
+      "submit": "Book appointment",
+      "submitting": "Booking…",
+      "changeTime": "Change date or time"
+    },
+    "success": {
+      "title": "Your appointment is booked",
+      "text": "Save it to your calendar with one of the options below.",
+      "viewCalendar": "Open my calendar",
+      "bookAnother": "Book another"
+    }
+  },
+  "calendar": {
+    "title": "My calendar",
+    "loading": "Loading appointments…",
+    "empty": "No appointments in this period.",
+    "legend": {
+      "title": "Legend",
+      "cancelled": "Cancelled appointments have a dashed outline."
+    },
+    "eventTitle": "{type} – {name} ({provider})",
+    "drawer": {
+      "title": "Appointment details"
+    },
+    "actions": {
+      "cancel": "Cancel appointment",
+      "cancelTitle": "Cancel this appointment?",
+      "cancelText": "The time becomes available to others. This cannot be undone.",
+      "cancelling": "Cancelling…",
+      "confirmCancel": "Yes, cancel appointment",
+      "keep": "Keep appointment",
+      "cancelled": "The appointment was cancelled.",
+      "reschedule": "Reschedule",
+      "rescheduleTitle": "Choose a new date and time",
+      "rescheduleSame": "Same professional",
+      "rescheduleAny": "Any available",
+      "rescheduleSubmit": "Move appointment",
+      "rescheduling": "Moving…",
+      "rescheduled": "Your appointment was moved.",
+      "back": "Back to details",
+      "windowNote": "Changes and cancellations are allowed until 2 hours before the start."
+    },
+    "links": {
+      "download": "Download .ics",
+      "downloading": "Downloading…",
+      "subscribe": "Subscribe in Google Calendar",
+      "subscribing": "Creating link…",
+      "subscribeHelp": "Creates a link that keeps your Google Calendar updated. Creating a new link replaces the previous one.",
+      "openSubscription": "Open in Google Calendar",
+      "feedLabel": "Calendar link",
+      "copy": "Copy link",
+      "copied": "Link copied.",
+      "instructions": "In Google Calendar, open Other calendars, choose From URL and paste the link.",
+      "addEvent": "Add this event to Google Calendar",
+      "newTab": "(opens in a new tab)",
+      "heading": "Add to your calendar"
+    }
+  },
   "settings": {},
   "admin": {},
-  "ics": {}
+  "ics": {},
+  "appointments": {
+    "title": "My appointments",
+    "filterLabel": "Show",
+    "filters": {
+      "upcoming": "Upcoming",
+      "past": "Past",
+      "cancelled": "Cancelled"
+    },
+    "empty": {
+      "upcoming": "No upcoming appointments.",
+      "past": "No past appointments.",
+      "cancelled": "No cancelled appointments."
+    },
+    "status": {
+      "SCHEDULED": "Scheduled",
+      "CANCELLED": "Cancelled",
+      "COMPLETED": "Completed",
+      "NO_SHOW": "No-show"
+    },
+    "open": "View details",
+    "detail": {
+      "service": "Service",
+      "professional": "Professional",
+      "clinic": "Clinic",
+      "address": "Address",
+      "phone": "Phone",
+      "when": "Date and time",
+      "duration": "Duration",
+      "preparation": "How to prepare",
+      "noPreparation": "No special preparation is needed.",
+      "notes": "Your notes",
+      "noNotes": "No notes."
+    }
+  }
 }

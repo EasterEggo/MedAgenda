@@ -55,6 +55,19 @@ export interface ApiClientOptions {
   fetchImpl?: typeof fetch;
 }
 
+export interface DownloadResult {
+  blob: Blob;
+  /** Filename from Content-Disposition, if the server sent one. */
+  filename: string | null;
+}
+
+/** Extracts `filename="..."` from a Content-Disposition header. */
+export function filenameFromDisposition(header: string | null): string | null {
+  if (!header) return null;
+  const match = /filename="?([^";]+)"?/i.exec(header);
+  return match?.[1]?.trim() || null;
+}
+
 export interface RequestOptions {
   query?: Record<string, string | number | undefined>;
   body?: unknown;
@@ -136,8 +149,21 @@ export function createApiClient({ baseUrl, fetchImpl }: ApiClientOptions) {
     return (await readBody(response)) as T;
   }
 
+  /** Authenticated binary download (e.g. .ics). The cookie is sent, so the file is owner-scoped. */
+  async function download(path: string, options: RequestOptions = {}): Promise<DownloadResult> {
+    const response = await send("GET", path, options);
+    if (!response.ok) {
+      throw new ApiError(codeFromBody(await readBody(response), response.status), response.status);
+    }
+    return {
+      blob: await response.blob(),
+      filename: filenameFromDisposition(response.headers.get("content-disposition")),
+    };
+  }
+
   return {
     get: <T>(path: string, options?: RequestOptions) => request<T>("GET", path, options),
+    download,
     post: <T>(path: string, body?: unknown) => request<T>("POST", path, { body }),
     patch: <T>(path: string, body?: unknown) => request<T>("PATCH", path, { body }),
     delete: <T>(path: string, body?: unknown) => request<T>("DELETE", path, { body }),

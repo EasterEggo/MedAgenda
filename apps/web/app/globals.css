@@ -16,6 +16,9 @@
   --success: #15803d;
   --success-bg: #f0fdf4;
   --ring: #0f766e;
+  --primary-bg: #ccfbf1; /* text-primary on primary-bg: 4.8:1 */
+  --exam: #4338ca; /* white on exam: 8.3:1; exam text on exam-bg: 5.9:1 */
+  --exam-bg: #e0e7ff;
 }
 
 @theme inline {
@@ -32,6 +35,9 @@
   --color-success: var(--success);
   --color-success-bg: var(--success-bg);
   --color-ring: var(--ring);
+  --color-primary-bg: var(--primary-bg);
+  --color-exam: var(--exam);
+  --color-exam-bg: var(--exam-bg);
 }
 
 body {
@@ -57,4 +63,47 @@ body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Calendar event colours. Type is also written in the event title, so colour is never the only cue. */
+.evt-consultation {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+.evt-exam {
+  background-color: var(--exam);
+  border-color: var(--exam);
+  color: #ffffff;
+}
+/* Cancelled events: light fill and a dashed outline, with the status in the title. */
+.evt-cancelled {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+  border-style: dashed !important;
+  border-width: 2px !important;
+}
+.evt-consultation.evt-cancelled {
+  border-color: var(--primary) !important;
+}
+.evt-exam.evt-cancelled {
+  border-color: var(--exam) !important;
+}
+.evt-swatch {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 0.25rem;
+  border: 2px solid transparent;
+}
+.evt-swatch.evt-consultation {
+  background-color: var(--primary);
+}
+.evt-swatch.evt-exam {
+  background-color: var(--exam);
+}
+.evt-swatch.evt-cancelled {
+  background-color: var(--card);
+  border-style: dashed;
+  border-color: var(--muted);
 }

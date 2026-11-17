@@ -11,6 +11,7 @@ export const buttonVariants = cva(
         default: "bg-primary text-primary-foreground hover:bg-primary-hover",
         outline: "border border-border bg-card text-foreground hover:bg-slate-100",
         ghost: "text-foreground hover:bg-slate-200",
+        danger: "bg-danger text-white hover:opacity-90",
         link: "min-h-0 px-0 text-primary underline underline-offset-4 hover:text-primary-hover",
       },
     },

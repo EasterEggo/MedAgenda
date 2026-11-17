@@ -15,7 +15,9 @@
       "submit": "Enviar",
       "cancel": "Cancelar",
       "save": "Salvar",
-      "close": "Fechar"
+      "close": "Fechar",
+      "retry": "Tentar novamente",
+      "loadMore": "Carregar mais"
     },
     "nav": {
       "main": "Navegação principal",
@@ -23,7 +25,10 @@
       "login": "Entrar",
       "register": "Criar conta",
       "dashboard": "Painel",
-      "logout": "Sair"
+      "logout": "Sair",
+      "book": "Agendar",
+      "calendar": "Calendário",
+      "appointments": "Atendimentos"
     },
     "footer": {
       "rights": "MedAgenda. Todos os direitos reservados.",
@@ -44,7 +49,16 @@
     "dashboard": {
       "title": "Painel",
       "welcome": "Bem-vindo ao MedAgenda.",
-      "placeholder": "Seus próximos compromissos aparecerão aqui."
+      "upcoming": "Próximos atendimentos",
+      "empty": "Você não tem atendimentos futuros.",
+      "bookConsultation": "Marcar consulta",
+      "bookExam": "Marcar exame",
+      "viewAll": "Ver todos os atendimentos",
+      "quickBook": "Agendamento rápido"
+    },
+    "serviceType": {
+      "CONSULTATION": "Consulta",
+      "EXAM": "Exame"
     }
   },
   "auth": {
@@ -161,9 +175,156 @@
     "NETWORK_ERROR": "Sem conexão com o servidor. Verifique sua internet.",
     "UNKNOWN": "Ocorreu um erro inesperado."
   },
-  "booking": {},
-  "calendar": {},
+  "booking": {
+    "title": "Marcar atendimento",
+    "progress": "Etapa {current} de {total}: {name}",
+    "steps": {
+      "type": "Tipo",
+      "catalog": "Especialidade ou exame",
+      "location": "Local",
+      "provider": "Profissional",
+      "slot": "Data e horário",
+      "confirm": "Confirmar",
+      "done": "Concluído"
+    },
+    "type": {
+      "title": "O que você precisa?",
+      "consultation": "Consulta",
+      "consultationText": "Atendimento com médico. As consultas duram 30 minutos.",
+      "exam": "Exame",
+      "examText": "Exames laboratoriais e de imagem. A duração depende do exame."
+    },
+    "catalog": {
+      "specialtyTitle": "Escolha a especialidade",
+      "examTitle": "Escolha o exame",
+      "search": "Buscar pelo nome",
+      "empty": "Nada corresponde à sua busca.",
+      "duration": "{minutes} min"
+    },
+    "location": {
+      "title": "Onde você quer ser atendido?",
+      "hint": "Opcional. Deixe em 'todas' para ver todas as clínicas.",
+      "city": "Cidade",
+      "allCities": "Todas as cidades",
+      "clinic": "Clínica",
+      "allClinics": "Todas as clínicas"
+    },
+    "provider": {
+      "title": "Escolha o profissional",
+      "any": "Qualquer disponível",
+      "anyText": "Mostra o primeiro horário livre com qualquer profissional que oferece isto.",
+      "empty": "Nenhum profissional corresponde a este filtro. Tente outra clínica ou cidade.",
+      "doctor": "Médico",
+      "resource": "Serviço de exames",
+      "crm": "CRM {crm}"
+    },
+    "slot": {
+      "title": "Escolha a data e o horário",
+      "range": "De {start} a {end}",
+      "previous": "Semana anterior",
+      "next": "Próxima semana",
+      "loading": "Carregando horários livres…",
+      "empty": "Não há horários livres neste período.",
+      "limit": "Os agendamentos estão abertos para até quatro semanas.",
+      "option": "{time} com {provider}",
+      "selected": "Selecionado"
+    },
+    "confirm": {
+      "title": "Revise seu agendamento",
+      "notes": "Observações (opcional)",
+      "notesHint": "Armazenadas criptografadas. Somente você pode vê-las.",
+      "submit": "Marcar atendimento",
+      "submitting": "Marcando…",
+      "changeTime": "Alterar data ou horário"
+    },
+    "success": {
+      "title": "Seu atendimento está marcado",
+      "text": "Salve no seu calendário com uma das opções abaixo.",
+      "viewCalendar": "Abrir meu calendário",
+      "bookAnother": "Marcar outro"
+    }
+  },
+  "calendar": {
+    "title": "Meu calendário",
+    "loading": "Carregando atendimentos…",
+    "empty": "Nenhum atendimento neste período.",
+    "legend": {
+      "title": "Legenda",
+      "cancelled": "Atendimentos cancelados têm contorno tracejado."
+    },
+    "eventTitle": "{type} – {name} ({provider})",
+    "drawer": {
+      "title": "Detalhes do atendimento"
+    },
+    "actions": {
+      "cancel": "Cancelar atendimento",
+      "cancelTitle": "Cancelar este atendimento?",
+      "cancelText": "O horário fica disponível para outras pessoas. Esta ação não pode ser desfeita.",
+      "cancelling": "Cancelando…",
+      "confirmCancel": "Sim, cancelar atendimento",
+      "keep": "Manter atendimento",
+      "cancelled": "O atendimento foi cancelado.",
+      "reschedule": "Remarcar",
+      "rescheduleTitle": "Escolha uma nova data e horário",
+      "rescheduleSame": "Mesmo profissional",
+      "rescheduleAny": "Qualquer disponível",
+      "rescheduleSubmit": "Mover atendimento",
+      "rescheduling": "Remarcando…",
+      "rescheduled": "Seu atendimento foi remarcado.",
+      "back": "Voltar aos detalhes",
+      "windowNote": "Alterações e cancelamentos são permitidos até 2 horas antes do início."
+    },
+    "links": {
+      "download": "Baixar .ics",
+      "downloading": "Baixando…",
+      "subscribe": "Assinar no Google Agenda",
+      "subscribing": "Criando link…",
+      "subscribeHelp": "Cria um link que mantém seu Google Agenda atualizado. Criar um novo link substitui o anterior.",
+      "openSubscription": "Abrir no Google Agenda",
+      "feedLabel": "Link do calendário",
+      "copy": "Copiar link",
+      "copied": "Link copiado.",
+      "instructions": "No Google Agenda, abra Outras agendas, escolha Por URL e cole o link.",
+      "addEvent": "Adicionar este evento ao Google Agenda",
+      "newTab": "(abre em nova aba)",
+      "heading": "Adicionar ao seu calendário"
+    }
+  },
   "settings": {},
   "admin": {},
-  "ics": {}
+  "ics": {},
+  "appointments": {
+    "title": "Meus atendimentos",
+    "filterLabel": "Mostrar",
+    "filters": {
+      "upcoming": "Próximos",
+      "past": "Anteriores",
+      "cancelled": "Cancelados"
+    },
+    "empty": {
+      "upcoming": "Nenhum atendimento futuro.",
+      "past": "Nenhum atendimento anterior.",
+      "cancelled": "Nenhum atendimento cancelado."
+    },
+    "status": {
+      "SCHEDULED": "Agendado",
+      "CANCELLED": "Cancelado",
+      "COMPLETED": "Concluído",
+      "NO_SHOW": "Faltou"
+    },
+    "open": "Ver detalhes",
+    "detail": {
+      "service": "Serviço",
+      "professional": "Profissional",
+      "clinic": "Clínica",
+      "address": "Endereço",
+      "phone": "Telefone",
+      "when": "Data e horário",
+      "duration": "Duração",
+      "preparation": "Como se preparar",
+      "noPreparation": "Não é necessário preparo especial.",
+      "notes": "Suas observações",
+      "noNotes": "Sem observações."
+    }
+  }
 }

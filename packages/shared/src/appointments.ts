@@ -13,6 +13,7 @@ export const BookAppointmentSchema = z.object({
 export const RescheduleSchema = z.object({ newSlotId: IdSchema });
 
 export const AppointmentStatusSchema = z.enum(["SCHEDULED", "CANCELLED", "COMPLETED", "NO_SHOW"]);
+export type AppointmentStatus = z.infer<typeof AppointmentStatusSchema>;
 
 const IsoDateTime = z.iso.datetime({ offset: true }).transform((v) => new Date(v));
 
