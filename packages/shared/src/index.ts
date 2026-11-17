@@ -2,3 +2,7 @@ export * from "./health.js";
 export * from "./errors.js";
 export * from "./cpf.js";
 export * from "./auth.js";
+export * from "./catalog.js";
+export * from "./appointments.js";
+export * from "./profile.js";
+export * from "./admin.js";

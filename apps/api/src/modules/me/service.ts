@@ -1,19 +1,90 @@
 import type { FastifyBaseLogger } from "fastify";
+import type { Prisma, User, PatientProfile } from "@prisma/client";
+import type { Locale, UpdateProfileSchema } from "@medagenda/shared";
+import type { z } from "zod";
 import { audit } from "../../lib/audit.js";
 import { blindIndex, decrypt, encrypt } from "../../lib/crypto.js";
 import { AppError, notFound } from "../../lib/errors.js";
 import { verifySecret } from "../../lib/password.js";
 import type { PrismaClient } from "../../lib/prisma.js";
-import { fromDbProfile, fromDbUser } from "../auth/mappers.js";
+import { AAD, fromDbProfile, fromDbUser } from "../auth/mappers.js";
 import { revokeAllSessions } from "../auth/sessions.js";
 import type { RequestMeta } from "../auth/service.js";
 
-const NOTES_AAD = "Appointment.notesEnc";
+const NOTES_AAD = AAD.appointmentNotes;
+
+type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
+
+function meDto(user: User & { profile: PatientProfile | null }) {
+  const account = fromDbUser(user);
+  return {
+    id: account.id,
+    email: account.email,
+    locale: account.locale,
+    role: account.role,
+    emailVerifiedAt: account.emailVerifiedAt,
+    totpEnabled: account.totpEnabled,
+    createdAt: account.createdAt,
+    profile: user.profile ? fromDbProfile(user.profile) : null,
+  };
+}
 
 export function createMeService(deps: { prisma: PrismaClient; log: FastifyBaseLogger }) {
   const { prisma, log } = deps;
 
   return {
+    async getProfile(userId: string, meta: RequestMeta) {
+      const user = await prisma.user.findFirst({
+        where: { id: userId, deletedAt: null },
+        include: { profile: true },
+      });
+      if (!user) throw notFound();
+      await audit(prisma, log, { userId, action: "PROFILE_READ", ip: meta.ip });
+      return meDto(user);
+    },
+
+    async updateProfile(userId: string, input: UpdateProfile, meta: RequestMeta) {
+      const data: Prisma.PatientProfileUpdateInput = {
+        ...(input.fullName !== undefined
+          ? { fullNameEnc: encrypt(input.fullName, AAD.profileFullName) }
+          : {}),
+        ...(input.birthDate !== undefined
+          ? { birthDateEnc: encrypt(input.birthDate, AAD.profileBirthDate) }
+          : {}),
+        ...(input.phone !== undefined ? { phoneEnc: encrypt(input.phone, AAD.profilePhone) } : {}),
+        ...(input.healthInsurance !== undefined
+          ? {
+              healthInsuranceEnc:
+                input.healthInsurance === null
+                  ? null
+                  : encrypt(input.healthInsurance, AAD.profileHealthInsurance),
+            }
+          : {}),
+      };
+      const res = await prisma.patientProfile.updateMany({
+        where: { userId, user: { deletedAt: null } },
+        data,
+      });
+      if (res.count === 0) throw notFound();
+      await audit(prisma, log, {
+        userId,
+        action: "PROFILE_UPDATED",
+        ip: meta.ip,
+        meta: { fields: Object.keys(input) },
+      });
+      return this.getProfile(userId, meta);
+    },
+
+    async updateLocale(userId: string, locale: Locale, meta: RequestMeta) {
+      const res = await prisma.user.updateMany({
+        where: { id: userId, deletedAt: null },
+        data: { locale },
+      });
+      if (res.count === 0) throw notFound();
+      await audit(prisma, log, { userId, action: "LOCALE_UPDATED", ip: meta.ip, meta: { locale } });
+      return { locale };
+    },
+
     /** LGPD: everything we hold about the user, decrypted. */
     async exportData(userId: string, meta: RequestMeta) {
       const user = await prisma.user.findFirst({

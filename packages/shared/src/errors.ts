@@ -21,6 +21,13 @@ export const ErrorCodes = [
   "MFA_INVALID_CODE",
   "MFA_ALREADY_ENABLED",
   "MFA_NOT_SETUP",
+  "SLOT_ALREADY_BOOKED",
+  "USER_TIME_CONFLICT",
+  "CANCELLATION_WINDOW_CLOSED",
+  "APPOINTMENT_NOT_SCHEDULED",
+  "DATE_RANGE_TOO_LARGE",
+  "CONFLICT",
+  "IN_USE",
 ] as const;
 
 export const ErrorCodeSchema = z.enum(ErrorCodes);

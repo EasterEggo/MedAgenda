@@ -14,6 +14,7 @@ export const AAD = {
   profileBirthDate: "PatientProfile.birthDateEnc",
   profilePhone: "PatientProfile.phoneEnc",
   profileHealthInsurance: "PatientProfile.healthInsuranceEnc",
+  appointmentNotes: "Appointment.notesEnc",
 } as const;
 
 export interface DomainUser {

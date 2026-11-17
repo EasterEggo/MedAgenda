@@ -212,7 +212,7 @@ model Slot {
   provider    Provider     @relation(fields: [providerId], references: [id], onDelete: Cascade)
   specialty   Specialty?   @relation(fields: [specialtyId], references: [id])
   examType    ExamType?    @relation(fields: [examTypeId], references: [id])
-  appointment Appointment?
+  appointments Appointment[]
 
   // The unique constraint also provides the (providerId, startsAt) index.
   @@unique([providerId, startsAt])
@@ -222,7 +222,7 @@ model Slot {
 model Appointment {
   id          String            @id @default(cuid())
   userId      String
-  slotId      String            @unique // backstop against double booking
+  slotId      String // double-booking backstop: partial unique index on non-cancelled rows (see migration)
   status      AppointmentStatus @default(SCHEDULED)
   notesEnc    Bytes?
   icsUid      String            @default(uuid())
@@ -234,6 +234,7 @@ model Appointment {
   slot Slot @relation(fields: [slotId], references: [id])
 
   @@index([userId, status])
+  @@index([slotId])
 }
 
 model CalendarFeed {
