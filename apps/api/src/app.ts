@@ -1,8 +1,5 @@
 import Fastify, { type FastifyError, type FastifyInstance } from "fastify";
-import {
-  HealthResponseSchema,
-  type ErrorCode,
-} from "@medagenda/shared";
+import { HealthResponseSchema, type ErrorCode } from "@medagenda/shared";
 
 export interface BuildAppOptions {
   logger?: boolean;
