@@ -12,7 +12,8 @@
     "test": "vitest run",
     "keys:generate": "tsx scripts/keys-generate.ts",
     "db:migrate": "prisma migrate dev",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "db:seed": "tsx --env-file-if-exists=../../.env prisma/seed.ts"
   },
   "dependencies": {
     "@fastify/cookie": "11.1.5",
@@ -40,5 +41,8 @@
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "vitest": "4.1.12"
+  },
+  "prisma": {
+    "seed": "tsx --env-file-if-exists=../../.env prisma/seed.ts"
   }
 }

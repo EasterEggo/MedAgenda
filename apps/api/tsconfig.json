@@ -4,5 +4,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "scripts/**/*.ts", "test/**/*.ts", "tsup.config.ts"]
+  "include": ["src/**/*.ts", "scripts/**/*.ts", "prisma/**/*.ts", "test/**/*.ts", "tsup.config.ts"]
 }
