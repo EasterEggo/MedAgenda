@@ -18,7 +18,7 @@ export interface CryptoEnv {
   BLIND_INDEX_KEY?: string | undefined;
 }
 
-export type BlindIndexPurpose = "email" | "cpf";
+export type BlindIndexPurpose = "email" | "cpf" | "ip";
 
 function decodeKey(value: unknown, label: string): Buffer {
   if (typeof value !== "string") throw new Error(`${label} must be a base64 string`);
@@ -50,7 +50,7 @@ function parseDataKeys(raw: string | undefined): Map<number, Buffer> {
 }
 
 export interface Crypto {
-  encrypt(plaintext: string, aad: string): Buffer;
+  encrypt(plaintext: string, aad: string): Buffer<ArrayBuffer>;
   decrypt(data: Buffer, aad: string): string;
   blindIndex(value: string, purpose: BlindIndexPurpose): string;
 }
@@ -102,7 +102,8 @@ export function createCrypto(env: CryptoEnv): Crypto {
 }
 
 export function normalizeForIndex(value: string, purpose: BlindIndexPurpose): string {
-  return purpose === "email" ? value.trim().toLowerCase() : value.replace(/\D/g, "");
+  if (purpose === "cpf") return value.replace(/\D/g, "");
+  return purpose === "email" ? value.trim().toLowerCase() : value.trim();
 }
 
 let instance: Crypto | undefined;
@@ -112,12 +113,17 @@ function getDefault(): Crypto {
   return instance;
 }
 
+/** Validates the key material and installs it as the process-wide instance. Called from loadConfig at startup. */
+export function initCrypto(env: CryptoEnv): void {
+  instance = createCrypto(env);
+}
+
 /** Test helper: drop the cached instance so env changes are re-read. */
 export function resetCryptoForTests(): void {
   instance = undefined;
 }
 
-export function encrypt(plaintext: string, aad: string): Buffer {
+export function encrypt(plaintext: string, aad: string): Buffer<ArrayBuffer> {
   return getDefault().encrypt(plaintext, aad);
 }
 

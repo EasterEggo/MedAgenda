@@ -6,3 +6,4 @@ const b64 = () => randomBytes(32).toString("base64");
 console.log(`DATA_KEYS={"1":"${b64()}"}`);
 console.log("DATA_KEY_CURRENT=1");
 console.log(`BLIND_INDEX_KEY=${b64()}`);
+console.log(`COOKIE_SECRET=${randomBytes(48).toString("base64url")}`);

@@ -53,6 +53,7 @@ model User {
   emailVerifiedAt  DateTime?
   totpSecretEnc    Bytes?
   totpEnabledAt    DateTime?
+  totpLastStep     Int? // last accepted TOTP time-step (replay protection)
   failedLoginCount Int       @default(0)
   lockedUntil      DateTime?
   createdAt        DateTime  @default(now())
@@ -72,7 +73,7 @@ model PatientProfile {
   id                 String   @id @default(cuid())
   userId             String   @unique
   fullNameEnc        Bytes
-  cpfEnc             Bytes
+  cpfEnc             Bytes? // optional at registration
   cpfHash            String?  @unique // blind index
   birthDateEnc       Bytes
   phoneEnc           Bytes
