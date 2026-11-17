@@ -2,6 +2,168 @@
   "common": {
     "appName": "MedAgenda",
     "tagline": "Todas as suas consultas e exames em um só lugar.",
-    "apiHealthLink": "Status da API"
-  }
+    "skipToContent": "Pular para o conteúdo",
+    "loading": "Carregando…",
+    "language": "Idioma",
+    "languages": {
+      "pt-BR": "Português (Brasil)",
+      "en": "English"
+    },
+    "actions": {
+      "back": "Voltar",
+      "next": "Continuar",
+      "submit": "Enviar",
+      "cancel": "Cancelar",
+      "save": "Salvar",
+      "close": "Fechar"
+    },
+    "nav": {
+      "main": "Navegação principal",
+      "home": "Início",
+      "login": "Entrar",
+      "register": "Criar conta",
+      "dashboard": "Painel",
+      "logout": "Sair"
+    },
+    "footer": {
+      "rights": "MedAgenda. Todos os direitos reservados.",
+      "privacy": "Seus dados de saúde são criptografados e tratados conforme a LGPD."
+    },
+    "landing": {
+      "heroTitle": "Suas consultas e exames, organizados.",
+      "heroSubtitle": "Agende médicos e exames, veja tudo em um calendário e leve para o Google Agenda.",
+      "ctaRegister": "Criar minha conta",
+      "ctaLogin": "Já tenho conta",
+      "bookTitle": "Agende em poucos passos",
+      "bookText": "Escolha a especialidade ou o exame, a clínica e o melhor horário.",
+      "calendarTitle": "Tudo em um calendário",
+      "calendarText": "Visualize por mês, semana ou lista e exporte para o Google Agenda.",
+      "secureTitle": "Segurança de verdade",
+      "secureText": "Dados criptografados e verificação em duas etapas opcional."
+    },
+    "dashboard": {
+      "title": "Painel",
+      "welcome": "Bem-vindo ao MedAgenda.",
+      "placeholder": "Seus próximos compromissos aparecerão aqui."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Entrar",
+      "subtitle": "Acesse sua conta para ver seus agendamentos.",
+      "email": "E-mail",
+      "password": "Senha",
+      "submit": "Entrar",
+      "forgot": "Esqueci minha senha",
+      "noAccount": "Ainda não tem conta?",
+      "registerLink": "Criar conta"
+    },
+    "mfa": {
+      "title": "Verificação em duas etapas",
+      "description": "Digite o código de 6 dígitos do seu aplicativo autenticador.",
+      "recoveryDescription": "Digite um dos seus códigos de recuperação. Cada código só funciona uma vez.",
+      "code": "Código",
+      "recoveryCode": "Código de recuperação",
+      "useRecovery": "Usar um código de recuperação",
+      "useTotp": "Usar o código do aplicativo",
+      "submit": "Verificar"
+    },
+    "register": {
+      "title": "Criar conta",
+      "progress": "Etapa {current} de {total}: {name}",
+      "steps": {
+        "account": "Conta",
+        "personal": "Dados pessoais",
+        "consent": "Consentimento"
+      },
+      "email": "E-mail",
+      "password": "Senha",
+      "passwordHint": "Mínimo de 10 caracteres.",
+      "confirmPassword": "Confirmar senha",
+      "fullName": "Nome completo",
+      "cpf": "CPF (opcional)",
+      "cpfHint": "Somente números ou no formato 000.000.000-00.",
+      "birthDate": "Data de nascimento",
+      "phone": "Telefone",
+      "consentTitle": "Tratamento de dados pessoais (LGPD)",
+      "consentText": "Seus dados pessoais e de saúde serão armazenados de forma criptografada e usados apenas para gerenciar seus agendamentos. Você pode exportar ou excluir seus dados a qualquer momento.",
+      "consentLabel": "Li e concordo com o tratamento dos meus dados pessoais.",
+      "next": "Continuar",
+      "back": "Voltar",
+      "submit": "Criar conta",
+      "haveAccount": "Já tem uma conta?",
+      "loginLink": "Entrar"
+    },
+    "forgot": {
+      "title": "Recuperar senha",
+      "subtitle": "Informe seu e-mail e enviaremos um link para redefinir a senha.",
+      "email": "E-mail",
+      "submit": "Enviar link",
+      "sent": "Se o e-mail estiver cadastrado, você receberá um link em instantes.",
+      "backToLogin": "Voltar para o login"
+    },
+    "reset": {
+      "title": "Nova senha",
+      "password": "Nova senha",
+      "confirmPassword": "Confirmar nova senha",
+      "submit": "Redefinir senha",
+      "success": "Senha redefinida. Entre com a nova senha.",
+      "missingToken": "O link está incompleto. Solicite um novo link de redefinição.",
+      "loginLink": "Ir para o login",
+      "requestLink": "Solicitar novo link"
+    },
+    "verify": {
+      "title": "Confirmação de e-mail",
+      "checking": "Confirmando seu e-mail…",
+      "success": "E-mail confirmado. Agora você pode entrar.",
+      "checkInbox": "Enviamos um link de confirmação para o seu e-mail. Abra-o para ativar a conta.",
+      "resendTitle": "Não recebeu o e-mail?",
+      "email": "E-mail",
+      "resend": "Reenviar confirmação",
+      "resent": "Se o e-mail estiver cadastrado, enviamos uma nova confirmação.",
+      "loginLink": "Ir para o login"
+    },
+    "validation": {
+      "required": "Campo obrigatório.",
+      "email": "Informe um e-mail válido.",
+      "invalid": "Valor inválido.",
+      "passwordMismatch": "As senhas não coincidem.",
+      "codeFormat": "Digite os 6 dígitos do código."
+    }
+  },
+  "errors": {
+    "BAD_REQUEST": "Requisição inválida.",
+    "VALIDATION_ERROR": "Alguns dados estão inválidos. Verifique e tente novamente.",
+    "NOT_FOUND": "Não encontramos o que você procura.",
+    "PAYLOAD_TOO_LARGE": "O conteúdo enviado é grande demais.",
+    "INTERNAL_ERROR": "Algo deu errado do nosso lado. Tente novamente em instantes.",
+    "RATE_LIMITED": "Muitas tentativas. Aguarde um minuto e tente de novo.",
+    "UNAUTHENTICATED": "Sua sessão expirou. Entre novamente.",
+    "FORBIDDEN": "Você não tem permissão para isso.",
+    "CSRF_INVALID": "Não foi possível validar a requisição. Recarregue a página e tente de novo.",
+    "INVALID_CREDENTIALS": "E-mail ou senha incorretos.",
+    "EMAIL_NOT_VERIFIED": "Confirme seu e-mail antes de entrar.",
+    "INVALID_TOKEN": "Este link é inválido ou expirou.",
+    "WEAK_PASSWORD": "A senha deve ter pelo menos 10 caracteres e não pode ser muito comum.",
+    "INVALID_CPF": "CPF inválido.",
+    "CONSENT_REQUIRED": "É necessário aceitar o termo de consentimento (LGPD).",
+    "MFA_REQUIRED": "Conclua a verificação em duas etapas para continuar.",
+    "MFA_INVALID_CODE": "Código inválido ou já utilizado.",
+    "MFA_ALREADY_ENABLED": "A verificação em duas etapas já está ativada.",
+    "MFA_NOT_SETUP": "A verificação em duas etapas ainda não foi configurada.",
+    "SLOT_ALREADY_BOOKED": "Este horário acabou de ser reservado. Escolha outro.",
+    "USER_TIME_CONFLICT": "Você já tem um compromisso neste horário.",
+    "CANCELLATION_WINDOW_CLOSED": "O cancelamento só é possível até 2 horas antes do horário.",
+    "APPOINTMENT_NOT_SCHEDULED": "Este agendamento não está mais ativo.",
+    "DATE_RANGE_TOO_LARGE": "O período escolhido é grande demais.",
+    "CONFLICT": "Conflito com os dados existentes.",
+    "IN_USE": "Este item está em uso e não pode ser removido.",
+    "NETWORK_ERROR": "Sem conexão com o servidor. Verifique sua internet.",
+    "UNKNOWN": "Ocorreu um erro inesperado."
+  },
+  "booking": {},
+  "calendar": {},
+  "settings": {},
+  "admin": {},
+  "ics": {}
 }
