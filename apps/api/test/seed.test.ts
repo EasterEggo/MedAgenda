@@ -44,8 +44,8 @@ describe("seed", () => {
       specialties: 12,
       examTypes: 10,
       clinics: 4,
-      providers: 20,
-      providerLinks: 25,
+      providers: 25,
+      providerLinks: 35,
       users: 2,
     });
     expect(first.slotsCreated).toBeGreaterThan(0);
@@ -62,15 +62,15 @@ describe("seed", () => {
       specialties: 12,
       examTypes: 10,
       clinics: 4,
-      providers: 20,
-      providerLinks: 25,
+      providers: 25,
+      providerLinks: 35,
       users: 2,
     });
     expect(await prisma.slot.count()).toBe(slotCount);
     expect(
       (await prisma.specialty.findMany({ select: { id: true } })).map((r) => r.id).sort(),
     ).toEqual(specialtyIds.sort());
-    expect(await prisma.providerExam.count()).toBe(10);
+    expect(await prisma.providerExam.count()).toBe(20);
     expect(await prisma.providerSpecialty.count()).toBe(15);
   });
 

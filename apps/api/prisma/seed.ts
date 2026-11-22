@@ -275,6 +275,12 @@ const EXAM_RESOURCES: ReadonlyArray<{ name: string; exams: readonly [number, num
   { name: "Centro de Diagnóstico Demo Copacabana", exams: [4, 5] },
   { name: "Laboratório Demo Savassi", exams: [6, 7] },
   { name: "Laboratório Demo Copacabana II", exams: [8, 9] },
+  // Second set: every exam type is also offered at a second resource in a different clinic.
+  { name: "Diagnóstico Demo Jardins", exams: [1, 2] },
+  { name: "Laboratório Demo Ipanema", exams: [3, 4] },
+  { name: "Centro de Imagem Demo Pinheiros", exams: [5, 6] },
+  { name: "Laboratório Demo Lourdes", exams: [7, 8] },
+  { name: "Diagnóstico Demo Barra", exams: [9, 0] },
 ];
 
 const SEED_CPF = "52998224725"; // sample CPF with valid check digits, used only for the demo patient
@@ -445,7 +451,7 @@ async function upsertProviders(
 
   for (let i = 0; i < EXAM_RESOURCES.length; i++) {
     const res = EXAM_RESOURCES[i] as (typeof EXAM_RESOURCES)[number];
-    const clinic = clinics[i % clinics.length] as { id: string; timezone: string };
+    const clinic = clinics[(i < 5 ? i : i + 2) % clinics.length] as { id: string; timezone: string };
     const providerId = await upsertProvider(prisma, {
       clinicId: clinic.id,
       name: res.name,
