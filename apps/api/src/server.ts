@@ -9,6 +9,7 @@ const mailer = createSmtpMailer({
   host: config.SMTP_HOST,
   port: config.SMTP_PORT,
   from: config.SMTP_FROM,
+  requireTls: config.NODE_ENV === "production",
 });
 const app = await buildApp({ config, prisma, mailer });
 app.addHook("onClose", async () => {

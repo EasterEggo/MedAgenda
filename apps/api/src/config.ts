@@ -30,6 +30,12 @@ export type ApiConfig = Omit<z.infer<typeof EnvSchema>, "CORS_ORIGINS"> & {
  */
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): ApiConfig {
   const parsed = EnvSchema.parse(env);
+  if (parsed.NODE_ENV === "production") {
+    const placeholders = [env.COOKIE_SECRET, env.DATA_KEYS, env.BLIND_INDEX_KEY];
+    if (placeholders.some((v) => v?.includes("REPLACE_WITH"))) {
+      throw new Error("Placeholder secrets from .env.example must be replaced in production");
+    }
+  }
   initCrypto(env);
   return {
     ...parsed,

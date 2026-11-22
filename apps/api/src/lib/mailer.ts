@@ -10,12 +10,19 @@ export interface Mailer {
   send(message: MailMessage): Promise<void>;
 }
 
-export function createSmtpMailer(opts: { host: string; port: number; from: string }): Mailer {
+export function createSmtpMailer(opts: {
+  host: string;
+  port: number;
+  from: string;
+  /** Production: require STARTTLS so tokens and appointment data never travel in clear text. */
+  requireTls?: boolean;
+}): Mailer {
   const transport = nodemailer.createTransport({
     host: opts.host,
     port: opts.port,
     secure: false,
-    ignoreTLS: true, // dev: Mailpit. Configure TLS here for a real SMTP provider.
+    // Dev: Mailpit has no TLS. Production: refuse to send unless the connection upgrades to TLS.
+    ...(opts.requireTls ? { requireTLS: true } : { ignoreTLS: true }),
   });
   return {
     async send(message) {
