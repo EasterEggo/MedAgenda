@@ -23,7 +23,6 @@ function meDto(user: User & { profile: PatientProfile | null }) {
     locale: account.locale,
     role: account.role,
     emailVerifiedAt: account.emailVerifiedAt,
-    totpEnabled: account.totpEnabled,
     createdAt: account.createdAt,
     profile: user.profile ? fromDbProfile(user.profile) : null,
   };
@@ -108,7 +107,6 @@ export function createMeService(deps: { prisma: PrismaClient; log: FastifyBaseLo
           locale: account.locale,
           role: account.role,
           emailVerifiedAt: account.emailVerifiedAt,
-          totpEnabled: account.totpEnabled,
           createdAt: account.createdAt,
         },
         profile: user.profile ? fromDbProfile(user.profile) : null,
@@ -154,7 +152,6 @@ export function createMeService(deps: { prisma: PrismaClient; log: FastifyBaseLo
         }
         await tx.appointment.updateMany({ where: { userId }, data: { notesEnc: null } });
         await tx.patientProfile.deleteMany({ where: { userId } });
-        await tx.recoveryCode.deleteMany({ where: { userId } });
         await tx.emailToken.deleteMany({ where: { userId } });
         await tx.calendarFeed.deleteMany({ where: { userId } });
         await tx.user.update({
@@ -165,9 +162,6 @@ export function createMeService(deps: { prisma: PrismaClient; log: FastifyBaseLo
             emailEnc: encrypt("", "User.emailEnc"),
             emailHash: blindIndex(`deleted:${userId}`, "email"),
             passwordHash: "!",
-            totpSecretEnc: null,
-            totpEnabledAt: null,
-            totpLastStep: null,
             lockedUntil: null,
           },
         });

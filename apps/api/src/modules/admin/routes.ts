@@ -24,7 +24,7 @@ const meta = (request: FastifyRequest) => ({
 
 export async function adminRoutes(app: FastifyInstance): Promise<void> {
   const s = createAdminService({ prisma: app.prisma, log: app.log });
-  const pre = { preHandler: [requireAuth({ mfa: true }), requireRole("ADMIN")] };
+  const pre = { preHandler: [requireAuth(), requireRole("ADMIN")] };
   const uid = (r: FastifyRequest) => r.auth!.user.id;
   const id = (r: FastifyRequest) => parse(IdParamSchema, r.params).id;
 

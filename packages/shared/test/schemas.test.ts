@@ -25,7 +25,7 @@ describe("ApiErrorSchema", () => {
   });
 });
 
-import { RegisterSchema, MfaVerifySchema, isValidCpf } from "../src/index.js";
+import { RegisterSchema, isValidCpf } from "../src/index.js";
 
 describe("isValidCpf", () => {
   it("validates check digits and rejects repeated digits", () => {
@@ -55,16 +55,5 @@ describe("RegisterSchema", () => {
     expect(RegisterSchema.safeParse({ ...base, password: "short" }).success).toBe(false);
     expect(RegisterSchema.safeParse({ ...base, cpf: "123" }).success).toBe(false);
     expect(RegisterSchema.safeParse({ ...base, consentLgpd: false }).success).toBe(false);
-  });
-});
-
-describe("MfaVerifySchema", () => {
-  it("accepts exactly one of code or recoveryCode", () => {
-    expect(MfaVerifySchema.safeParse({ code: "123456" }).success).toBe(true);
-    expect(MfaVerifySchema.safeParse({ recoveryCode: "ABCDE-FGHIJ" }).success).toBe(true);
-    expect(MfaVerifySchema.safeParse({ code: "123456", recoveryCode: "ABCDE-FGHIJ" }).success).toBe(
-      false,
-    );
-    expect(MfaVerifySchema.safeParse({}).success).toBe(false);
   });
 });

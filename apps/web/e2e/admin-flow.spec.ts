@@ -1,9 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import {
-  enableTwoFactor,
   LOCALE,
   login,
-  logout,
   newUser,
   promoteLatestUserToAdmin,
   register,
@@ -14,7 +12,6 @@ import {
 test.describe.configure({ mode: "serial" });
 
 const user = newUser();
-let secret = "";
 let page: Page;
 
 test.beforeAll(async ({ browser }) => {
@@ -33,15 +30,10 @@ test("a patient sees the translated forbidden state on /admin", async () => {
   await expect(forbidden.getByText(t("admin.forbidden.adminOnly"))).toBeVisible();
 });
 
-test("an admin without 2FA is asked to enable it", async () => {
+test("a promoted admin can open the admin area", async () => {
   promoteLatestUserToAdmin();
   await page.goto(`/${LOCALE}/admin/specialties`);
-  await expect(
-    page.getByTestId("admin-forbidden").getByText(t("admin.forbidden.mfaRequired")),
-  ).toBeVisible();
-  secret = await enableTwoFactor(page);
-  await logout(page);
-  await login(page, user, secret);
+  await expect(page.getByTestId("admin-forbidden")).toHaveCount(0);
 });
 
 test("an admin manages specialties", async () => {

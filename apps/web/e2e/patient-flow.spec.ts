@@ -1,12 +1,11 @@
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
-import { LOCALE, login, logout, newUser, register, rx, t, totp, verifyEmail } from "./support";
+import { LOCALE, login, newUser, register, rx, t, verifyEmail } from "./support";
 
 // One user walks the whole journey; the tests run in order and share state.
 test.describe.configure({ mode: "serial" });
 
 const user = newUser();
-let secret = "";
 let page: Page;
 
 test.beforeAll(async ({ browser }) => {
@@ -21,32 +20,8 @@ test("registers and verifies the email through Mailpit", async () => {
   await verifyEmail(page, user);
 });
 
-test("enables 2FA and shows the recovery codes once", async () => {
+test("logs in", async () => {
   await login(page, user);
-  await page.goto(`/${LOCALE}/app/settings`);
-  const mfa = page.getByTestId("settings-mfa");
-  await mfa.getByRole("button", { name: t("settings.mfa.start") }).click();
-  await expect(mfa.getByRole("img", { name: t("settings.mfa.qrAlt") })).toBeVisible();
-  secret = await mfa.getByLabel(t("settings.mfa.manualSecret")).inputValue();
-  expect(secret).toMatch(/^[A-Z2-7]{16,}$/);
-
-  await mfa.getByLabel(t("settings.mfa.code")).fill(totp(secret));
-  await mfa.getByRole("button", { name: t("settings.mfa.enable") }).click();
-
-  await expect(page.getByTestId("recovery-codes").getByRole("listitem")).toHaveCount(10);
-  // Dismissal is gated by the "I saved them" checkbox.
-  const done = mfa.getByRole("button", { name: t("settings.mfa.recoveryDone") });
-  await expect(done).toBeDisabled();
-  await mfa.getByRole("checkbox", { name: t("settings.mfa.recoverySaved") }).click();
-  await expect(done).toBeEnabled();
-  await done.click();
-  await expect(page.getByTestId("recovery-codes")).toHaveCount(0);
-  await expect(mfa.getByText(t("settings.mfa.disableTitle"))).toBeVisible();
-});
-
-test("logs out and logs back in with a TOTP code", async () => {
-  await logout(page);
-  await login(page, user, secret);
 });
 
 test("books an exam, sees it in the calendar, downloads the .ics and cancels", async () => {

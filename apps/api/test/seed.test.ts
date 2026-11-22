@@ -74,14 +74,12 @@ describe("seed", () => {
     expect(await prisma.providerSpecialty.count()).toBe(15);
   });
 
-  it("creates a verified admin without TOTP and a verified demo patient with a profile", async () => {
+  it("creates a verified admin and a verified demo patient with a profile", async () => {
     const admin = await prisma.user.findUniqueOrThrow({
       where: { emailHash: blindIndex(ADMIN_EMAIL, "email") },
     });
     expect(admin.role).toBe("ADMIN");
     expect(admin.emailVerifiedAt).not.toBeNull();
-    expect(admin.totpSecretEnc).toBeNull();
-    expect(admin.totpEnabledAt).toBeNull();
     expect(fromDbUser(admin).email).toBe(ADMIN_EMAIL);
     expect(await verifySecret(admin.passwordHash, ADMIN_PASSWORD)).toBe(true);
 

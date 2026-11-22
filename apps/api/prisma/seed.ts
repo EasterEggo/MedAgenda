@@ -498,7 +498,6 @@ async function ensureAdmin(prisma: PrismaClient, password: string, now: Date): P
     });
     return;
   }
-  // TOTP is deliberately not seeded: requireRole('ADMIN') needs the admin to enroll 2FA (see README).
   await prisma.user.create({
     data: {
       ...toDbUser({

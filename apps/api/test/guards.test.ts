@@ -4,22 +4,20 @@ import {
   Client,
   createTestEnv,
   createVerifiedUser,
-  enableMfa,
   errorCode,
   findUser,
-  totp,
   type TestEnv,
 } from "./helpers.js";
 
 let env: TestEnv;
 beforeAll(async () => {
   env = await createTestEnv({}, (app) => {
-    app.get("/api/v1/_test/protected", { preHandler: requireAuth({ mfa: true }) }, async () => ({
+    app.get("/api/v1/_test/protected", { preHandler: requireAuth() }, async () => ({
       ok: true,
     }));
     app.get(
       "/api/v1/_test/admin",
-      { preHandler: [requireAuth({ mfa: true }), requireRole("ADMIN")] },
+      { preHandler: [requireAuth(), requireRole("ADMIN")] },
       async () => ({
         ok: true,
       }),
@@ -41,20 +39,12 @@ describe("guards", () => {
     expect([res.statusCode, errorCode(res)]).toEqual([403, "FORBIDDEN"]);
   });
 
-  it("requires ADMIN accounts to have passed MFA", async () => {
+  it("lets an ADMIN account through requireRole without any second factor", async () => {
     const { email } = await createVerifiedUser(env);
     const user = await findUser(env, email);
     await env.prisma.user.update({ where: { id: user.id }, data: { role: "ADMIN" } });
-
     const c = new Client(env);
     await c.login(email);
-    expect(errorCode(await c.get("/_test/admin"))).toBe("MFA_REQUIRED"); // no TOTP enrolled
-    const { secret } = await enableMfa(env, c, email);
-
-    const d = new Client(env);
-    await d.login(email);
-    expect(errorCode(await d.get("/_test/admin"))).toBe("MFA_REQUIRED"); // enrolled, not yet verified
-    await d.post("/auth/mfa/verify", { code: totp(secret) });
-    expect((await d.get("/_test/admin")).statusCode).toBe(200);
+    expect((await c.get("/_test/admin")).statusCode).toBe(200);
   });
 });

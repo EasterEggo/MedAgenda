@@ -1,6 +1,6 @@
 import type { FastifyRequest, preHandlerAsyncHookHandler } from "fastify";
 import type { Role } from "@prisma/client";
-import { AppError, forbidden, unauthenticated } from "../../lib/errors.js";
+import { forbidden, unauthenticated } from "../../lib/errors.js";
 import type { AuthContext } from "../../types.js";
 import { findLiveSession } from "./sessions.js";
 
@@ -28,23 +28,18 @@ export async function resolveAuth(request: FastifyRequest): Promise<AuthContext 
   return request.auth;
 }
 
-/** Requires a valid session. With `mfa: true`, the session must also have passed the TOTP step. */
-export function requireAuth(opts: { mfa: boolean } = { mfa: true }): preHandlerAsyncHookHandler {
+/** Requires a valid session. */
+export function requireAuth(): preHandlerAsyncHookHandler {
   return async (request) => {
     const auth = await resolveAuth(request);
     if (!auth) throw unauthenticated();
-    if (opts.mfa && !auth.session.mfaPassed) throw new AppError("MFA_REQUIRED", 403);
   };
 }
 
-/** Use after requireAuth. Admins must additionally have TOTP enabled (and passed in this session). */
 export function requireRole(role: Role): preHandlerAsyncHookHandler {
   return async (request) => {
     const auth = request.auth;
     if (!auth) throw unauthenticated();
     if (auth.user.role !== role) throw forbidden();
-    if (role === "ADMIN" && (!auth.user.totpEnabledAt || !auth.session.mfaPassed)) {
-      throw new AppError("MFA_REQUIRED", 403);
-    }
   };
 }

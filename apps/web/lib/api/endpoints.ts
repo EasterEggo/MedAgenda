@@ -16,7 +16,6 @@ export interface MeResponse {
   locale: Locale;
   role: "PATIENT" | "ADMIN";
   emailVerifiedAt: string | null;
-  totpEnabled: boolean;
   createdAt: string;
   profile: Profile | null;
 }
@@ -44,7 +43,6 @@ export interface SessionInfo {
   lastUsedAt: string;
   expiresAt: string;
   userAgent: string | null;
-  mfaPassed: boolean;
   current: boolean;
 }
 
@@ -172,8 +170,6 @@ export const authApi = {
     api.setCsrfToken(result.csrfToken ?? null);
     return result;
   },
-  verifyMfa: (input: { code: string } | { recoveryCode: string }) =>
-    api.post<{ ok: true }>("/auth/mfa/verify", input),
   async logout() {
     await api.post<{ ok: true }>("/auth/logout");
     api.setCsrfToken(null);
@@ -190,13 +186,6 @@ export const meApi = {
   /** LGPD export (decrypted JSON), as a downloadable blob. */
   exportData: () => api.download("/me/export"),
   deleteAccount: (password: string) => api.delete<{ ok: true }>("/me", { password }),
-};
-
-export const mfaApi = {
-  setup: () => api.post<{ otpauthUri: string; qrDataUrl: string }>("/auth/mfa/setup"),
-  enable: (code: string) => api.post<{ recoveryCodes: string[] }>("/auth/mfa/enable", { code }),
-  disable: (input: { password: string; code: string }) =>
-    api.post<{ ok: true }>("/auth/mfa/disable", input),
 };
 
 export const sessionsApi = {

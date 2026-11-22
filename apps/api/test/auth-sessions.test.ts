@@ -26,12 +26,12 @@ describe("CSRF (double submit)", () => {
     const c = new Client(env);
     await c.login(email);
 
-    const missing = await c.post("/auth/mfa/setup", {}, { csrf: false });
+    const missing = await c.post("/auth/resend-verification", { email }, { csrf: false });
     expect([missing.statusCode, errorCode(missing)]).toEqual([403, "CSRF_INVALID"]);
 
     const forged = await c.post(
-      "/auth/mfa/setup",
-      {},
+      "/auth/resend-verification",
+      { email },
       { csrf: false, headers: { "x-csrf-token": "forged-token" } },
     );
     expect(errorCode(forged)).toBe("CSRF_INVALID");
@@ -40,13 +40,13 @@ describe("CSRF (double submit)", () => {
     const other = new Client(env);
     await other.login(email);
     const crossed = await c.post(
-      "/auth/mfa/setup",
-      {},
+      "/auth/resend-verification",
+      { email },
       { csrf: false, headers: { "x-csrf-token": other.csrf! } },
     );
     expect(errorCode(crossed)).toBe("CSRF_INVALID");
 
-    expect((await c.post("/auth/mfa/setup")).statusCode).toBe(200);
+    expect((await c.post("/auth/resend-verification", { email })).statusCode).toBe(202);
 
     const mobile = new Client(env);
     const login = await mobile.post("/auth/login", { email, password: PASSWORD, client: "mobile" });

@@ -152,7 +152,6 @@ describe("login", () => {
     const c = new Client(env);
     const res = await c.login(email);
     expect(res.statusCode).toBe(200);
-    expect(res.json().mfaRequired).toBe(false);
     expect(res.json().token).toBeUndefined();
     const sid = res.cookies.find((x) => x.name === "sid");
     expect(sid).toMatchObject({ httpOnly: true, secure: true, sameSite: "Lax", path: "/" });
@@ -160,7 +159,6 @@ describe("login", () => {
       where: { tokenHash: sha256Hex(sid!.value) },
     });
     expect(stored.tokenHash).not.toBe(sid!.value);
-    expect(stored.mfaPassed).toBe(true);
   });
 
   it("answers unknown email and wrong password identically", async () => {

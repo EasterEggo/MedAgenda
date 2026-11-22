@@ -53,16 +53,7 @@ pnpm db:seed                  # idempotent: safe to run again, creates no duplic
 - `admin@medagenda.local` (password from `SEED_ADMIN_PASSWORD`, email verified, role ADMIN)
 - `paciente.demo@medagenda.local` (email verified, profile filled). Its password is `SEED_DEMO_PASSWORD` if set on the first run. Otherwise it is random and unknown: use "forgot password" and read the email in Mailpit at http://localhost:8025.
 
-### Enroll 2FA for the admin
-
-The seed does not create TOTP. Admin routes require 2FA, so the admin enrolls it once. The easiest way is the web UI: sign in at `/pt-BR/login` and use Settings, then Two-factor authentication. Through the API instead, use `http://localhost:3001/api/v1` and keep the `sid` cookie between requests (for example with `curl -c jar -b jar`):
-
-1. `POST /auth/login` with `{ "email": "admin@medagenda.local", "password": "<SEED_ADMIN_PASSWORD>" }`. Keep the returned `csrfToken`.
-2. `POST /auth/mfa/setup` with header `x-csrf-token: <csrfToken>`. It returns `otpauthUri` and `qrDataUrl`. Add the secret to an authenticator app.
-3. `POST /auth/mfa/enable` with `{ "code": "<6 digits from the app>" }` and the CSRF header. It returns 10 recovery codes, shown once. Store them.
-4. From then on, each login returns `mfaRequired: true`. Call `POST /auth/mfa/verify` with `{ "code": "..." }` before using admin routes.
-
-Never commit the seed passwords, recovery codes or TOTP secrets.
+Never commit the seed passwords.
 
 ## Scripts
 
@@ -90,8 +81,8 @@ Catalogs live in `packages/shared/i18n/{pt-BR,en}.json` with the namespaces `com
 
 `pnpm e2e` builds the web app into `apps/web/.next-e2e`, starts its own API on `:3101` and web on `:3100` (so it does not collide with `pnpm dev`) and runs `apps/web/e2e`:
 
-- `patient-flow`: register, verify the email through the Mailpit API, enable 2FA (TOTP computed with `otplib`), log out and in with a TOTP code, book an exam, see it in the calendar, download the `.ics`, cancel; then profile, calendar feed, data export and account deletion.
-- `admin-flow`: forbidden state for patients and for admins without 2FA, specialty CRUD, slot generation and block/unblock.
+- `patient-flow`: register, verify the email through the Mailpit API, log in, book an exam, see it in the calendar, download the `.ics`, cancel; then profile, calendar feed, data export and account deletion.
+- `admin-flow`: forbidden state for patients, specialty CRUD, slot generation and block/unblock.
 
 Requirements:
 

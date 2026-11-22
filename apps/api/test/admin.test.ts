@@ -11,20 +11,13 @@ afterAll(async () => {
 });
 
 describe("admin", () => {
-  it("requires auth, the ADMIN role and MFA", async () => {
+  it("requires auth and the ADMIN role", async () => {
     const body = { slug: "x", namePt: "X", nameEn: "X" };
     expect((await new Client(env).post("/admin/specialties", body)).statusCode).toBe(401);
     const patient = await bearerUser(env);
     const res = await patient.client.post("/admin/specialties", body);
     expect([res.statusCode, errorCode(res)]).toEqual([403, "FORBIDDEN"]);
     expect((await patient.client.post("/admin/slots/generate", {})).statusCode).toBe(403);
-    // ADMIN session without MFA passed
-    const admin = await bearerUser(env, "ADMIN");
-    await env.prisma.session.updateMany({
-      where: { userId: admin.user.id },
-      data: { mfaPassed: false },
-    });
-    expect(errorCode(await admin.client.post("/admin/specialties", body))).toBe("MFA_REQUIRED");
   });
 
   it("CRUDs catalog entities, keeping unspecified fields on patch", async () => {

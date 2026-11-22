@@ -11,7 +11,6 @@ export async function createSession(
   prisma: PrismaClient,
   input: {
     userId: string;
-    mfaPassed: boolean;
     userAgent?: string | undefined;
     ip?: string | undefined;
   },
@@ -24,7 +23,6 @@ export async function createSession(
       userAgent: input.userAgent?.slice(0, 255) ?? null,
       ipHash: hashIp(input.ip),
       expiresAt: new Date(Date.now() + SESSION_LIFETIME_MS),
-      mfaPassed: input.mfaPassed,
     },
   });
   return { token, session };

@@ -51,9 +51,6 @@ model User {
   locale           String    @default("pt-BR") // "pt-BR" | "en", validated by shared Zod schema
   role             Role      @default(PATIENT)
   emailVerifiedAt  DateTime?
-  totpSecretEnc    Bytes?
-  totpEnabledAt    DateTime?
-  totpLastStep     Int? // last accepted TOTP time-step (replay protection)
   failedLoginCount Int       @default(0)
   lockedUntil      DateTime?
   createdAt        DateTime  @default(now())
@@ -62,7 +59,6 @@ model User {
 
   profile       PatientProfile?
   sessions      Session[]
-  recoveryCodes RecoveryCode[]
   emailTokens   EmailToken[]
   appointments  Appointment[]
   calendarFeed  CalendarFeed?
@@ -94,18 +90,6 @@ model Session {
   lastUsedAt DateTime  @default(now())
   expiresAt  DateTime
   revokedAt  DateTime?
-  mfaPassed  Boolean   @default(false)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model RecoveryCode {
-  id       String    @id @default(cuid())
-  userId   String
-  codeHash String // argon2
-  usedAt   DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

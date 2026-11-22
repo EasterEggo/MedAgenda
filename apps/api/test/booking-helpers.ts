@@ -3,7 +3,7 @@ import { createSession } from "../src/modules/auth/sessions.js";
 import { toDbUser } from "../src/modules/auth/mappers.js";
 import { Client, uniqueEmail, type TestEnv } from "./helpers.js";
 
-/** Creates a user + MFA-passed session straight in the DB (fast) and returns a Bearer client. */
+/** Creates a user + session straight in the DB (fast) and returns a Bearer client. */
 export async function bearerUser(env: TestEnv, role: "PATIENT" | "ADMIN" = "PATIENT") {
   const email = uniqueEmail();
   const user = await env.prisma.user.create({
@@ -11,10 +11,9 @@ export async function bearerUser(env: TestEnv, role: "PATIENT" | "ADMIN" = "PATI
       ...toDbUser({ email, passwordHash: "!", locale: "en" }),
       role,
       emailVerifiedAt: new Date(),
-      ...(role === "ADMIN" ? { totpEnabledAt: new Date() } : {}),
     },
   });
-  const { token } = await createSession(env.prisma, { userId: user.id, mfaPassed: true });
+  const { token } = await createSession(env.prisma, { userId: user.id });
   const client = new Client(env);
   client.bearer = token;
   return { client, user, email };

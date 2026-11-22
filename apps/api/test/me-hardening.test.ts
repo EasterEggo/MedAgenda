@@ -5,7 +5,6 @@ import {
   Client,
   createTestEnv,
   errorCode,
-  enableMfa,
   findUser,
   PASSWORD,
   registerBody,
@@ -69,7 +68,7 @@ describe("LGPD export and delete", () => {
       birthDate: "1990-05-01",
     });
     expect(data.appointments[0].notes).toBe("private note");
-    expect(JSON.stringify(data)).not.toMatch(/passwordHash|tokenHash|totpSecret/);
+    expect(JSON.stringify(data)).not.toMatch(/passwordHash|tokenHash/);
     const actions = (await env.prisma.auditLog.findMany({ where: { userId: user.id } })).map(
       (r) => r.action,
     );
@@ -166,7 +165,7 @@ describe("hardening", () => {
     expect(res.json()).toEqual({ error: { code: "BAD_REQUEST" } });
   });
 
-  it("does not log passwords, tokens, cookies, TOTP secrets or recovery codes", async () => {
+  it("does not log passwords, tokens, cookies or CSRF tokens", async () => {
     const lines: string[] = [];
     const logged = await createTestEnv({}, undefined, { write: (l) => void lines.push(l) });
     try {
@@ -177,7 +176,6 @@ describe("hardening", () => {
       await c.post("/auth/verify-email", { token: verifyToken });
       const login = await c.login(email);
       const sid = login.cookies.find((x) => x.name === "sid")!.value;
-      const { secret, recoveryCodes } = await enableMfa(logged, c, email);
       await c.post("/auth/forgot", { email });
       const resetToken = lastToken(logged, email);
       await c.post("/auth/reset", { token: resetToken, password: "never logged passphrase" });
@@ -190,8 +188,6 @@ describe("hardening", () => {
         resetToken,
         sid,
         c.csrf!,
-        secret,
-        ...recoveryCodes,
         email,
       ]) {
         expect(all).not.toContain(secretValue);

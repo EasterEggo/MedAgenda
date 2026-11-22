@@ -17,7 +17,7 @@ export async function appointmentRoutes(app: FastifyInstance): Promise<void> {
     mailer: app.mailer,
     config: app.config,
   });
-  const pre = { preHandler: requireAuth({ mfa: true }) };
+  const pre = { preHandler: requireAuth() };
 
   app.post("/appointments", pre, async (request, reply) => {
     const body = parse(BookAppointmentSchema, request.body);

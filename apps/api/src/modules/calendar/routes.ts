@@ -16,7 +16,7 @@ export async function calendarRoutes(app: FastifyInstance): Promise<void> {
     log: app.log,
     publicApiUrl: app.config.PUBLIC_API_URL,
   });
-  const pre = { preHandler: requireAuth({ mfa: true }) };
+  const pre = { preHandler: requireAuth() };
 
   app.get("/appointments/:id/ics", pre, async (request, reply) => {
     const { id } = parse(IdParamSchema, request.params);

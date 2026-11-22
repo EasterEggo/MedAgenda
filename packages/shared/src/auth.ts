@@ -53,21 +53,6 @@ export const ResetPasswordSchema = z.object({
   password: PasswordSchema,
 });
 
-const TotpCodeSchema = z
-  .string()
-  .trim()
-  .regex(/^\d{6}$/);
-const RecoveryCodeSchema = z.string().trim().min(8).max(32);
-
-export const MfaVerifySchema = z.union([
-  z.object({ code: TotpCodeSchema }).strict(),
-  z.object({ recoveryCode: RecoveryCodeSchema }).strict(),
-]);
-export const MfaEnableSchema = z.object({ code: TotpCodeSchema });
-export const MfaDisableSchema = z.object({
-  password: z.string().min(1).max(PASSWORD_MAX_LENGTH),
-  code: TotpCodeSchema,
-});
 export const DeleteAccountSchema = z.object({
   password: z.string().min(1).max(PASSWORD_MAX_LENGTH),
 });
@@ -75,7 +60,6 @@ export const DeleteAccountSchema = z.object({
 export const SessionIdParamSchema = z.object({ id: z.string().min(1).max(64) });
 
 export const LoginResponseSchema = z.object({
-  mfaRequired: z.boolean(),
   csrfToken: z.string().optional(),
   token: z.string().optional(),
 });

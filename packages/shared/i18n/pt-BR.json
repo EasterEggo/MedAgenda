@@ -44,7 +44,7 @@
       "calendarTitle": "Tudo em um calendário",
       "calendarText": "Visualize por mês, semana ou lista e exporte para o Google Agenda.",
       "secureTitle": "Segurança de verdade",
-      "secureText": "Dados criptografados e verificação em duas etapas opcional."
+      "secureText": "Dados de saúde criptografados e tratados conforme a LGPD."
     },
     "dashboard": {
       "title": "Painel",
@@ -71,16 +71,6 @@
       "forgot": "Esqueci minha senha",
       "noAccount": "Ainda não tem conta?",
       "registerLink": "Criar conta"
-    },
-    "mfa": {
-      "title": "Verificação em duas etapas",
-      "description": "Digite o código de 6 dígitos do seu aplicativo autenticador.",
-      "recoveryDescription": "Digite um dos seus códigos de recuperação. Cada código só funciona uma vez.",
-      "code": "Código",
-      "recoveryCode": "Código de recuperação",
-      "useRecovery": "Usar um código de recuperação",
-      "useTotp": "Usar o código do aplicativo",
-      "submit": "Verificar"
     },
     "register": {
       "title": "Criar conta",
@@ -141,8 +131,7 @@
       "required": "Campo obrigatório.",
       "email": "Informe um e-mail válido.",
       "invalid": "Valor inválido.",
-      "passwordMismatch": "As senhas não coincidem.",
-      "codeFormat": "Digite os 6 dígitos do código."
+      "passwordMismatch": "As senhas não coincidem."
     },
     "emails": {
       "verify": {
@@ -175,10 +164,6 @@
     "WEAK_PASSWORD": "A senha deve ter pelo menos 10 caracteres e não pode ser muito comum.",
     "INVALID_CPF": "CPF inválido.",
     "CONSENT_REQUIRED": "É necessário aceitar o termo de consentimento (LGPD).",
-    "MFA_REQUIRED": "Conclua a verificação em duas etapas para continuar.",
-    "MFA_INVALID_CODE": "Código inválido ou já utilizado.",
-    "MFA_ALREADY_ENABLED": "A verificação em duas etapas já está ativada.",
-    "MFA_NOT_SETUP": "A verificação em duas etapas ainda não foi configurada.",
     "SLOT_ALREADY_BOOKED": "Este horário acabou de ser reservado. Escolha outro.",
     "USER_TIME_CONFLICT": "Você já tem um compromisso neste horário.",
     "CANCELLATION_WINDOW_CLOSED": "O cancelamento só é possível até 2 horas antes do horário.",
@@ -363,28 +348,6 @@
       "title": "Idioma",
       "label": "Idioma da interface"
     },
-    "mfa": {
-      "title": "Autenticação em dois fatores",
-      "description": "Proteja sua conta com um código de um app autenticador.",
-      "enabledDescription": "A autenticação em dois fatores está ativa na sua conta.",
-      "start": "Configurar autenticação em dois fatores",
-      "scanInstructions": "Leia o QR code com seu app autenticador e digite o código de 6 dígitos exibido.",
-      "qrAlt": "QR code para adicionar o MedAgenda ao seu app autenticador",
-      "manualSecret": "Chave secreta (digitação manual)",
-      "manualHint": "Use se não conseguir ler o QR code.",
-      "otpauthUri": "Link de configuração (otpauth)",
-      "code": "Código de 6 dígitos",
-      "enable": "Ativar",
-      "enabledSuccess": "Autenticação em dois fatores ativada.",
-      "recoveryTitle": "Seus códigos de recuperação",
-      "recoveryWarning": "Guarde estes códigos em um lugar seguro. Cada um vale uma única vez se você perder o autenticador. Eles não serão exibidos novamente.",
-      "recoverySaved": "Eu guardei meus códigos de recuperação",
-      "recoveryDone": "Concluir",
-      "disableTitle": "Desativar autenticação em dois fatores",
-      "disableHelp": "Confirme com sua senha e um código atual.",
-      "password": "Senha",
-      "disable": "Desativar"
-    },
     "sessions": {
       "title": "Sessões ativas",
       "description": "Dispositivos conectados à sua conta. Encerre os que você não reconhece.",
@@ -505,8 +468,6 @@
     "forbidden": {
       "title": "Acesso restrito",
       "adminOnly": "Esta área é apenas para administradores.",
-      "mfaRequired": "Administradores precisam ativar a autenticação em dois fatores para usar esta área.",
-      "goSettings": "Ir para configurações",
       "goDashboard": "Voltar ao painel"
     }
   },

@@ -2,7 +2,6 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { expect, type Page } from "@playwright/test";
-import { generateSync } from "otplib";
 
 export const LOCALE: "pt-BR" | "en" = process.env.E2E_LOCALE === "en" ? "en" : "pt-BR";
 const MAILPIT = process.env.MAILPIT_URL ?? "http://localhost:8025";
@@ -35,11 +34,6 @@ export function newUser(): TestUser {
     email: `e2e-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`,
     password: PASSWORD,
   };
-}
-
-/** TOTP for a base32 secret. `offsetSeconds` picks a later 30 s step (the server rejects replays). */
-export function totp(secret: string, offsetSeconds = 0): string {
-  return generateSync({ secret, epoch: Math.floor(Date.now() / 1000) + offsetSeconds });
 }
 
 /** Polls Mailpit for the verification mail sent to `email` and returns its token. */
@@ -85,35 +79,18 @@ export async function verifyEmail(page: Page, user: TestUser): Promise<void> {
   await expect(page.getByText(t("auth.verify.success"))).toBeVisible();
 }
 
-/** Signs in. Pass `secret` for accounts with 2FA; the code comes from the next 30 s step. */
-export async function login(page: Page, user: TestUser, secret?: string): Promise<void> {
+/** Signs in with email and password. */
+export async function login(page: Page, user: TestUser): Promise<void> {
   await page.goto(`/${LOCALE}/login`);
   await page.getByLabel(t("auth.login.email")).fill(user.email);
   await page.getByLabel(t("auth.login.password")).fill(user.password);
   await page.getByRole("button", { name: t("auth.login.submit") }).click();
-  if (secret) {
-    await page.getByLabel(t("auth.mfa.code")).fill(totp(secret, 30));
-    await page.getByRole("button", { name: t("auth.mfa.submit") }).click();
-  }
   await expect(page).toHaveURL(new RegExp(`/${LOCALE}/app$`));
 }
 
 export async function logout(page: Page): Promise<void> {
   await page.getByRole("button", { name: t("common.nav.logout") }).click();
   await expect(page).toHaveURL(/\/login$/);
-}
-
-/** Turns on 2FA from the settings page and returns the base32 secret. Leaves the recovery dialog closed. */
-export async function enableTwoFactor(page: Page): Promise<string> {
-  await page.goto(`/${LOCALE}/app/settings`);
-  const mfa = page.getByTestId("settings-mfa");
-  await mfa.getByRole("button", { name: t("settings.mfa.start") }).click();
-  const secret = await mfa.getByLabel(t("settings.mfa.manualSecret")).inputValue();
-  await mfa.getByLabel(t("settings.mfa.code")).fill(totp(secret));
-  await mfa.getByRole("button", { name: t("settings.mfa.enable") }).click();
-  await mfa.getByRole("checkbox", { name: t("settings.mfa.recoverySaved") }).click();
-  await mfa.getByRole("button", { name: t("settings.mfa.recoveryDone") }).click();
-  return secret;
 }
 
 /**

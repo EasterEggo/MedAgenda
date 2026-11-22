@@ -1,4 +1,3 @@
-import { randomInt } from "node:crypto";
 import type { FastifyBaseLogger } from "fastify";
 import type { Locale, LoginInput, RegisterInput } from "@medagenda/shared";
 import type { EmailTokenPurpose, Session, User } from "@prisma/client";
@@ -16,17 +15,14 @@ import {
   verifySecret,
 } from "../../lib/password.js";
 import type { PrismaClient } from "../../lib/prisma.js";
-import { checkTotp, newTotpSecret, totpUri } from "../../lib/totp.js";
 import { buildEmail } from "./emails.js";
-import { fromDbTotpSecret, fromDbUser, toDbProfile, toDbTotpSecret, toDbUser } from "./mappers.js";
-import { createSession, revokeAllSessions, revokeSession } from "./sessions.js";
+import { fromDbUser, toDbProfile, toDbUser } from "./mappers.js";
+import { createSession, revokeSession } from "./sessions.js";
 
 export const MAX_FAILED_LOGINS = 5;
 export const LOCK_MS = 15 * 60 * 1000;
 const VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
 const RESET_TTL_MS = 60 * 60 * 1000;
-const RECOVERY_CODE_COUNT = 10;
-const RECOVERY_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // no ambiguous 0/O/1/I/L
 
 export interface RequestMeta {
   ip?: string | undefined;
@@ -38,18 +34,6 @@ export interface AuthDeps {
   mailer: Mailer;
   config: ApiConfig;
   log: FastifyBaseLogger;
-}
-
-function generateRecoveryCode(): string {
-  const chars = Array.from(
-    { length: 10 },
-    () => RECOVERY_ALPHABET[randomInt(RECOVERY_ALPHABET.length)],
-  );
-  return `${chars.slice(0, 5).join("")}-${chars.slice(5).join("")}`;
-}
-
-function normalizeRecoveryCode(input: string): string {
-  return input.toUpperCase().replace(/[^A-Z0-9]/g, "");
 }
 
 export function createAuthService(deps: AuthDeps) {
@@ -93,7 +77,7 @@ export function createAuthService(deps: AuthDeps) {
     if (isCommonPassword(password)) throw new AppError("WEAK_PASSWORD", 400);
   }
 
-  /** Counts a failed credential/MFA attempt and locks the account after MAX_FAILED_LOGINS. */
+  /** Counts a failed credential attempt and locks the account after MAX_FAILED_LOGINS. */
   async function recordFailure(user: User, meta: RequestMeta): Promise<boolean> {
     const updated = await prisma.user.update({
       where: { id: user.id },
@@ -107,37 +91,6 @@ export function createAuthService(deps: AuthDeps) {
       });
       await auditLog({ userId: user.id, action: "LOGIN_LOCKED", ip: meta.ip });
       return true;
-    }
-    return false;
-  }
-
-  async function consumeTotp(user: User, code: string): Promise<boolean> {
-    const secret = fromDbTotpSecret(user);
-    if (!secret) return false;
-    const check = checkTotp(secret, code, user.totpLastStep);
-    if (!check.valid) return false;
-    // Conditional update makes concurrent replays of the same code race-safe.
-    const res = await prisma.user.updateMany({
-      where: {
-        id: user.id,
-        OR: [{ totpLastStep: null }, { totpLastStep: { lt: check.step } }],
-      },
-      data: { totpLastStep: check.step },
-    });
-    return res.count === 1;
-  }
-
-  async function consumeRecoveryCode(userId: string, input: string): Promise<boolean> {
-    const normalized = normalizeRecoveryCode(input);
-    const codes = await prisma.recoveryCode.findMany({ where: { userId, usedAt: null } });
-    for (const rc of codes) {
-      if (await verifySecret(rc.codeHash, normalized)) {
-        const res = await prisma.recoveryCode.updateMany({
-          where: { id: rc.id, usedAt: null },
-          data: { usedAt: new Date() },
-        });
-        return res.count === 1;
-      }
     }
     return false;
   }
@@ -215,7 +168,7 @@ export function createAuthService(deps: AuthDeps) {
     async login(
       input: LoginInput,
       meta: RequestMeta,
-    ): Promise<{ token: string; mfaRequired: boolean; session: Session }> {
+    ): Promise<{ token: string; session: Session }> {
       const user = await prisma.user.findFirst({
         where: { emailHash: blindIndex(input.email, "email"), deletedAt: null },
       });
@@ -243,127 +196,22 @@ export function createAuthService(deps: AuthDeps) {
       }
       if (!user.emailVerifiedAt) throw new AppError("EMAIL_NOT_VERIFIED", 403);
 
-      const mfaRequired = user.totpEnabledAt !== null;
       await prisma.user.update({
         where: { id: user.id },
-        data: mfaRequired ? { lockedUntil: null } : { failedLoginCount: 0, lockedUntil: null }, // with MFA the counter resets after the second step
+        data: { failedLoginCount: 0, lockedUntil: null },
       });
       const { token, session } = await createSession(prisma, {
         userId: user.id,
-        mfaPassed: !mfaRequired,
         userAgent: meta.userAgent,
         ip: meta.ip,
       });
-      await auditLog({ userId: user.id, action: "LOGIN_OK", ip: meta.ip, meta: { mfaRequired } });
-      return { token, mfaRequired, session };
+      await auditLog({ userId: user.id, action: "LOGIN_OK", ip: meta.ip });
+      return { token, session };
     },
 
     async logout(session: Session, meta: RequestMeta): Promise<void> {
       await revokeSession(prisma, session.id);
       await auditLog({ userId: session.userId, action: "LOGOUT", ip: meta.ip });
-    },
-
-    async verifyMfa(
-      user: User,
-      session: Session,
-      body: { code: string } | { recoveryCode: string },
-      meta: RequestMeta,
-    ): Promise<void> {
-      if (!user.totpEnabledAt) throw new AppError("MFA_NOT_SETUP", 400);
-      if (session.mfaPassed) return;
-      if (user.lockedUntil && user.lockedUntil.getTime() > Date.now()) {
-        await revokeSession(prisma, session.id);
-        throw new AppError("UNAUTHENTICATED", 401);
-      }
-      const usingRecovery = "recoveryCode" in body;
-      const ok = usingRecovery
-        ? await consumeRecoveryCode(user.id, body.recoveryCode)
-        : await consumeTotp(user, body.code);
-      if (!ok) {
-        const locked = await recordFailure(user, meta);
-        await auditLog({ userId: user.id, action: "MFA_FAIL", ip: meta.ip });
-        if (locked) await revokeSession(prisma, session.id);
-        throw new AppError("MFA_INVALID_CODE", 401);
-      }
-      await prisma.$transaction([
-        prisma.session.update({ where: { id: session.id }, data: { mfaPassed: true } }),
-        prisma.user.update({
-          where: { id: user.id },
-          data: { failedLoginCount: 0, lockedUntil: null },
-        }),
-      ]);
-      await auditLog({
-        userId: user.id,
-        action: usingRecovery ? "RECOVERY_CODE_USED" : "MFA_OK",
-        ip: meta.ip,
-      });
-    },
-
-    async mfaSetup(
-      user: User,
-      meta: RequestMeta,
-    ): Promise<{ otpauthUri: string; qrDataUrl: string }> {
-      if (user.totpEnabledAt) throw new AppError("MFA_ALREADY_ENABLED", 409);
-      const secret = newTotpSecret();
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { totpSecretEnc: toDbTotpSecret(secret), totpLastStep: null },
-      });
-      const { default: QRCode } = await import("qrcode");
-      const otpauthUri = totpUri(secret, fromDbUser(user).email);
-      const qrDataUrl = await QRCode.toDataURL(otpauthUri);
-      await auditLog({ userId: user.id, action: "MFA_SETUP", ip: meta.ip });
-      return { otpauthUri, qrDataUrl };
-    },
-
-    async mfaEnable(
-      user: User,
-      session: Session,
-      code: string,
-      meta: RequestMeta,
-    ): Promise<string[]> {
-      if (user.totpEnabledAt) throw new AppError("MFA_ALREADY_ENABLED", 409);
-      if (!user.totpSecretEnc) throw new AppError("MFA_NOT_SETUP", 400);
-      if (!(await consumeTotp(user, code))) throw new AppError("MFA_INVALID_CODE", 401);
-      const codes = Array.from({ length: RECOVERY_CODE_COUNT }, generateRecoveryCode);
-      const hashes = await Promise.all(codes.map((c) => hashSecret(normalizeRecoveryCode(c))));
-      await prisma.$transaction([
-        prisma.user.update({ where: { id: user.id }, data: { totpEnabledAt: new Date() } }),
-        prisma.recoveryCode.deleteMany({ where: { userId: user.id } }),
-        prisma.recoveryCode.createMany({
-          data: hashes.map((codeHash) => ({ userId: user.id, codeHash })),
-        }),
-      ]);
-      // Sessions created before 2FA existed never proved a second factor.
-      await revokeAllSessions(prisma, user.id, session.id);
-      await auditLog({ userId: user.id, action: "MFA_ENABLED", ip: meta.ip });
-      return codes;
-    },
-
-    async mfaDisable(
-      user: User,
-      session: Session,
-      input: { password: string; code: string },
-      meta: RequestMeta,
-    ): Promise<void> {
-      if (!user.totpEnabledAt) throw new AppError("MFA_NOT_SETUP", 400);
-      if (!(await verifySecret(user.passwordHash, input.password))) {
-        await recordFailure(user, meta);
-        throw new AppError("INVALID_CREDENTIALS", 401);
-      }
-      if (!(await consumeTotp(user, input.code))) {
-        await recordFailure(user, meta);
-        throw new AppError("MFA_INVALID_CODE", 401);
-      }
-      await prisma.$transaction([
-        prisma.user.update({
-          where: { id: user.id },
-          data: { totpSecretEnc: null, totpEnabledAt: null, totpLastStep: null },
-        }),
-        prisma.recoveryCode.deleteMany({ where: { userId: user.id } }),
-      ]);
-      await revokeAllSessions(prisma, user.id, session.id);
-      await auditLog({ userId: user.id, action: "MFA_DISABLED", ip: meta.ip });
     },
 
     async listSessions(userId: string, currentId: string) {
@@ -377,7 +225,6 @@ export function createAuthService(deps: AuthDeps) {
         lastUsedAt: s.lastUsedAt,
         expiresAt: s.expiresAt,
         userAgent: s.userAgent,
-        mfaPassed: s.mfaPassed,
         current: s.id === currentId,
       }));
     },

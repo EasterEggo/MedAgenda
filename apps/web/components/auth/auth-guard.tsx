@@ -15,11 +15,9 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const { data, error, isPending } = useMe();
 
   const redirectTo =
-    error instanceof ApiError && error.code === "MFA_REQUIRED"
-      ? "/login?mfa=1"
-      : error instanceof ApiError && (error.code === "UNAUTHENTICATED" || error.status === 401)
-        ? "/login"
-        : null;
+    error instanceof ApiError && (error.code === "UNAUTHENTICATED" || error.status === 401)
+      ? "/login"
+      : null;
 
   useEffect(() => {
     if (redirectTo) router.replace(redirectTo);

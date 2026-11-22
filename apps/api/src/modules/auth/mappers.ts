@@ -8,7 +8,6 @@ import { blindIndex, decrypt, encrypt } from "../../lib/crypto.js";
 
 export const AAD = {
   userEmail: "User.emailEnc",
-  userTotpSecret: "User.totpSecretEnc",
   profileFullName: "PatientProfile.fullNameEnc",
   profileCpf: "PatientProfile.cpfEnc",
   profileBirthDate: "PatientProfile.birthDateEnc",
@@ -23,7 +22,6 @@ export interface DomainUser {
   locale: Locale;
   role: User["role"];
   emailVerifiedAt: Date | null;
-  totpEnabled: boolean;
   createdAt: Date;
 }
 
@@ -47,17 +45,8 @@ export function fromDbUser(row: User): DomainUser {
     locale: row.locale === "en" ? "en" : "pt-BR",
     role: row.role,
     emailVerifiedAt: row.emailVerifiedAt,
-    totpEnabled: row.totpEnabledAt !== null,
     createdAt: row.createdAt,
   };
-}
-
-export function toDbTotpSecret(secret: string): Buffer<ArrayBuffer> {
-  return encrypt(secret, AAD.userTotpSecret);
-}
-
-export function fromDbTotpSecret(row: Pick<User, "totpSecretEnc">): string | null {
-  return row.totpSecretEnc ? decrypt(Buffer.from(row.totpSecretEnc), AAD.userTotpSecret) : null;
 }
 
 export function toDbProfile(

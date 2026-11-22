@@ -1,6 +1,5 @@
 import { randomBytes } from "node:crypto";
 import type { FastifyInstance, InjectOptions, LightMyRequestResponse } from "fastify";
-import { generateSync } from "otplib";
 import { buildApp } from "../src/app.js";
 import { blindIndex } from "../src/lib/crypto.js";
 import { loadConfig, type ApiConfig } from "../src/config.js";
@@ -133,31 +132,6 @@ export function lastToken(env: TestEnv, email: string): string {
   const match = last && /token=([^\s&]+)/.exec(last.text);
   if (!match?.[1]) throw new Error("no token email found");
   return decodeURIComponent(match[1]);
-}
-
-export const totp = (secret: string, offsetSeconds = 0) =>
-  generateSync({ secret, epoch: Math.floor(Date.now() / 1000) + offsetSeconds });
-
-/**
- * Enables TOTP for a logged-in client. Afterwards the replay guard is rewound so tests can reuse
- * the current code for a fresh login (real users would wait for the next 30 s step).
- */
-export async function enableMfa(env: TestEnv, c: Client, email: string) {
-  const setup = await c.post("/auth/mfa/setup");
-  expectStatus(setup, 200);
-  const uri = new URL(setup.json().otpauthUri as string);
-  const secret = uri.searchParams.get("secret") as string;
-  const enable = await c.post("/auth/mfa/enable", { code: totp(secret) });
-  expectStatus(enable, 200);
-  await rewindReplayGuard(env, email);
-  return { secret, recoveryCodes: enable.json().recoveryCodes as string[] };
-}
-
-export async function rewindReplayGuard(env: TestEnv, email: string) {
-  await env.prisma.user.update({
-    where: { emailHash: blindIndex(email, "email") },
-    data: { totpLastStep: null },
-  });
 }
 
 export const findUser = (env: TestEnv, email: string) =>
